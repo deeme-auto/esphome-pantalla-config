@@ -1,0 +1,270 @@
+esphome:
+  name: pantalla
+  friendly_name: Pantalla
+
+esp32:
+  variant: esp32s3
+  framework:
+    type: esp-idf
+
+logger:
+
+api:
+  encryption:
+    key: !secret api_encryption_key
+
+ota:
+  - platform: esphome
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  ap:
+    ssid: "Pantalla Fallback Hotspot"
+    password: !secret fallback_password
+
+captive_portal:
+
+# ============================================================
+# PSRAM
+# ============================================================
+
+psram:
+  mode: octal
+  speed: 80MHz
+
+# ============================================================
+# RETROILUMINACIÓN
+# ============================================================
+
+output:
+  - platform: ledc
+    id: backlight_output
+    frequency: 150Hz
+    min_power: 0.01
+    pin: 38
+    zero_means_zero: true
+
+light:
+  - platform: monochromatic
+    name: "Backlight"
+    id: display_backlight
+    output: backlight_output
+    default_transition_length: 1s
+    restore_mode: ALWAYS_ON
+
+# ============================================================
+# SPI
+# ============================================================
+
+spi:
+  - id: lcd_spi
+    clk_pin: 48
+    mosi_pin: 47
+
+# ============================================================
+# I2C - TOUCH GT911
+# ============================================================
+
+i2c:
+  - id: touchscreen_bus
+    scl:
+      ignore_strapping_warning: true
+      number: 45
+    sda: 19
+
+# ============================================================
+# PANTALLA ST7701S
+# ============================================================
+
+display:
+  - platform: st7701s
+    id: tft_display
+
+    auto_clear_enabled: false
+    color_order: RGB
+
+    cs_pin: 39
+
+    data_pins:
+      blue: [4, 5, 6, 7, 15]
+      green: [8, 20, 3, 46, 9, 10]
+      red: [11, 12, 13, 14, 0]
+
+    data_rate: 2MHz
+
+    de_pin: 18
+
+    dimensions:
+      width: 480
+      height: 480
+
+    hsync_back_porch: 20
+    hsync_front_porch: 10
+    hsync_pin: 16
+    hsync_pulse_width: 8
+
+    invert_colors: false
+
+    pclk_frequency: 12MHz
+    pclk_inverted: false
+    pclk_pin: 21
+
+    spi_mode: MODE3
+
+    update_interval: never
+
+    vsync_back_porch: 10
+    vsync_front_porch: 10
+    vsync_pin: 17
+    vsync_pulse_width: 8
+
+# ============================================================
+# TOUCH GT911
+# ============================================================
+
+touchscreen:
+  - platform: gt911
+    id: tft_touch
+    display: tft_display
+
+# ============================================================
+# LVGL CONFIGURATION
+# ============================================================
+
+lvgl:
+  displays:
+    - tft_display
+
+  touchscreens:
+    - touchscreen_id: tft_touch
+
+  color_depth: 16
+
+  buffer_size: 25%
+
+  refresh_interval: 50ms
+
+  theme:
+    button:
+      bg_color: 0x202020
+      bg_opa: 100%
+      border_width: 1
+      border_color: 0x404040
+      radius: 12
+      text_color: 0xFFFFFF
+    label:
+      text_color: 0xFFFFFF
+
+  pages:
+    - id: main_page
+      layout: 3x4
+      widgets:
+        # FILA 0: TÍTULO (ocupa los 3 columnas)
+        - label:
+            id: titulo
+            grid_cell_row_pos: 0
+            grid_cell_column_pos: 0
+            grid_cell_column_span: 3
+            text: "CASA"
+            text_font: montserrat_24
+            text_color: 0xFFFFFF
+            bg_color: black
+            bg_opa: cover
+
+        # FILA 1: SALÓN, DORMITORIO, PRESENCIA
+        - label:
+            id: salon_titulo
+            grid_cell_row_pos: 1
+            grid_cell_column_pos: 0
+            text: "SALÓN"
+            text_font: montserrat_20
+            text_color: 0xFFFFFF
+            bg_color: black
+            bg_opa: cover
+        - label:
+            id: dormitorio_titulo
+            grid_cell_row_pos: 1
+            grid_cell_column_pos: 1
+            text: "DORMITORIO"
+            text_font: montserrat_20
+            text_color: 0xFFFFFF
+            bg_color: black
+            bg_opa: cover
+        - label:
+            id: presencia_titulo
+            grid_cell_row_pos: 1
+            grid_cell_column_pos: 2
+            text: "PRESENCIA"
+            text_font: montserrat_20
+            text_color: 0xFFFFFF
+            bg_color: black
+            bg_opa: cover
+
+        # FILA 2: VENTANAS, ILUMINACIÓN, AIRE
+        - label:
+            id: ventanas_titulo
+            grid_cell_row_pos: 2
+            grid_cell_column_pos: 0
+            text: "VENTANAS"
+            text_font: montserrat_20
+            text_color: 0xFFFFFF
+            bg_color: black
+            bg_opa: cover
+        - label:
+            id: iluminancia_titulo
+            grid_cell_row_pos: 2
+            grid_cell_column_pos: 1
+            text: "ILUMINANCIA"
+            text_font: montserrat_18
+            text_color: 0xFFFFFF
+            bg_color: black
+            bg_opa: cover
+        - label:
+            id: aire_titulo
+            grid_cell_row_pos: 2
+            grid_cell_column_pos: 2
+            text: "AIRE"
+            text_font: montserrat_18
+            text_color: 0xFFFFFF
+            bg_color: black
+            bg_opa: cover
+
+        # FILA 3: BOTONES DE CONTROL
+        - button:
+            id: boton_luz_salon
+            grid_cell_row_pos: 3
+            grid_cell_column_pos: 0
+            grid_cell_column_span: 2
+            text: "💡  LUZ SALÓN"
+            text_font: montserrat_16
+            bg_color: $button_off_color
+            bg_opa: 100%
+            border_width: 1
+            border_color: 0x404040
+            radius: 12
+            text_color: 0xFFFFFF
+            on_click:
+              - homeassistant.action:
+                  action: light.toggle
+                  data:
+                    entity_id: light.bombilla_salon
+
+        - button:
+            id: boton_luz_habitacion
+            grid_cell_row_pos: 3
+            grid_cell_column_pos: 2
+            text: "💡  HABITACIÓN"
+            text_font: montserrat_16
+            bg_color: $button_off_color
+            bg_opa: 100%
+            border_width: 1
+            border_color: 0x404040
+            radius: 12
+            text_color: 0xFFFFFF
+            on_click:
+              - homeassistant.action:
+                  action: light.toggle
+                  data:
+                    entity_id: light.bombilla_habitacion
