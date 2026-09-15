@@ -760,6 +760,12 @@ lvgl:
                   y: 30
                   text: "SIN DATOS"
                   text_color: text_secondary
+              - label:
+                  id: main_estado_movimiento
+                  x: 10
+                  y: 52
+                  text: "SIN DATOS"
+                  text_color: text_secondary
 
         # Tarjeta Ventanas
         - container:
