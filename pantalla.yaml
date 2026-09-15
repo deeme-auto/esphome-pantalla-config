@@ -995,7 +995,7 @@ lvgl:
                   text: "Iluminación"
                   text_color: text_secondary
               - label:
-                  id: main_valor_iluminacion_salon
+                  id: detail_valor_iluminacion_salon
                   x: 10
                   y: 45
                   text: "--- lx"
