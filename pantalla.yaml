@@ -43,6 +43,7 @@ output:
     id: backlight_output
     frequency: 150Hz
     min_power: 0.01
+    max_power: 0.70
     pin: 38
     zero_means_zero: true
 
