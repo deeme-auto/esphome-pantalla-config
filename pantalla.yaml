@@ -568,7 +568,8 @@ lvgl:
     # ========================================================
 
     - id: pagina_principal
-      bg_color: bg_dark
+      bg_color: 0x1C1B19
+      bg_opa: cover
       widgets:
 
         # ----------------------------------------------------
@@ -945,7 +946,8 @@ lvgl:
     # ========================================================
 
     - id: pagina_salon
-      bg_color: bg_dark
+      bg_color: 0x1C1B19
+      bg_opa: cover
       widgets:
         # Botón de vuelta
         - button:
@@ -1073,7 +1075,8 @@ lvgl:
     # ========================================================
 
     - id: pagina_dormitorio
-      bg_color: bg_dark
+      bg_color: 0x1C1B19
+      bg_opa: cover
       widgets:
         # Botón de vuelta
         - button:
