@@ -130,60 +130,6 @@ touchscreen:
     display: tft_display
 
 # ============================================================
-# FUENTES
-# ============================================================
-
-font:
-  - file: "https://github.com/Templarian/MaterialDesign-Webfont/raw/v7.4.47/fonts/materialdesignicons-webfont.ttf"
-    id: mdi_40
-    size: 40
-    bpp: 8
-    glyphs:
-      - "\U000F0335"  # mdi-lightbulb
-      - "\U000F0336"  # mdi-lightbulb-on
-      - "\U000F0392"  # mdi-thermostat
-      - "\U000F03E3"  # mdi-water-percent
-      - "\U000F03E0"  # mdi-window-open
-      - "\U000F03DF"  # mdi-window-closed
-      - "\U000F03E4"  # mdi-motion-sensor
-      - "\U000F02DC"  # mdi-home
-      - "\U000F0596"  # mdi-weather-sunny
-      - "\U000F0597"  # mdi-weather-night
-      - "\U000F076B"  # mdi-air-conditioner
-      - "\U000F0349"  # mdi-arrow-left
-      - "\U000F034A"  # mdi-arrow-right
-
-  - file: "https://github.com/google/fonts/raw/main/apache/nunito/static/Nunito-SemiBold.ttf"
-    id: nunito_24
-    size: 24
-    bpp: 8
-    glyphs: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.-%°C%%"
-
-  - file: "https://github.com/google/fonts/raw/main/apache/nunito/static/Nunito-SemiBold.ttf"
-    id: nunito_20
-    size: 20
-    bpp: 8
-    glyphs: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.-%°C%%"
-
-  - file: "https://github.com/google/fonts/raw/main/apache/nunito/static/Nunito-SemiBold.ttf"
-    id: nunito_18
-    size: 18
-    bpp: 8
-    glyphs: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.-%°C%%"
-
-  - file: "https://github.com/google/fonts/raw/main/apache/nunito/static/Nunito-SemiBold.ttf"
-    id: nunito_16
-    size: 16
-    bpp: 8
-    glyphs: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.-%°C%%"
-
-  - file: "https://github.com/google/fonts/raw/main/apache/nunito/static/Nunito-SemiBold.ttf"
-    id: nunito_14
-    size: 14
-    bpp: 8
-    glyphs: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.-%°C%%"
-
-# ============================================================
 # COLORES PERSONALIZADOS
 # ============================================================
 
@@ -565,7 +511,7 @@ lvgl:
       widgets:
 
         # ----------------------------------------------------
-        # BARRA SUPERIOR - Hora y fecha
+        # BARRA SUPERIOR
         # ----------------------------------------------------
 
         - container:
@@ -584,14 +530,12 @@ lvgl:
                   x: 20
                   y: 15
                   text: "00:00"
-                  text_font: nunito_20
                   text_color: text_primary
               - label:
                   id: fecha_actual
                   x: 300
                   y: 15
                   text: "--/--/----"
-                  text_font: nunito_16
                   text_color: text_secondary
 
         # ----------------------------------------------------
@@ -612,21 +556,13 @@ lvgl:
               - label:
                   x: 10
                   y: 5
-                  text: "\U000F0392"
-                  text_font: mdi_40
-                  text_color: accent_color
-              - label:
-                  x: 60
-                  y: 5
                   text: "TEMP"
-                  text_font: nunito_14
                   text_color: text_secondary
               - label:
                   id: valor_temperatura_general
-                  x: 60
+                  x: 10
                   y: 30
                   text: "--.- °C"
-                  text_font: nunito_24
                   text_color: text_primary
 
         # Tarjeta Humedad General
@@ -643,21 +579,13 @@ lvgl:
               - label:
                   x: 10
                   y: 5
-                  text: "\U000F03E3"
-                  text_font: mdi_40
-                  text_color: primary_color
-              - label:
-                  x: 60
-                  y: 5
                   text: "HUMEDAD"
-                  text_font: nunito_14
                   text_color: text_secondary
               - label:
                   id: valor_humedad_general
-                  x: 60
+                  x: 10
                   y: 30
                   text: "-- %"
-                  text_font: nunito_24
                   text_color: text_primary
 
         # Tarjeta Iluminación
@@ -674,21 +602,13 @@ lvgl:
               - label:
                   x: 10
                   y: 5
-                  text: "\U000F0596"
-                  text_font: mdi_40
-                  text_color: accent_color
-              - label:
-                  x: 60
-                  y: 5
                   text: "LUZ"
-                  text_font: nunito_14
                   text_color: text_secondary
               - label:
                   id: valor_iluminacion_salon
-                  x: 60
+                  x: 10
                   y: 30
                   text: "--- lx"
-                  text_font: nunito_24
                   text_color: text_primary
 
         # ----------------------------------------------------
@@ -709,40 +629,29 @@ lvgl:
               - label:
                   x: 10
                   y: 5
-                  text: "\U000F02DC"
-                  text_font: mdi_40
-                  text_color: primary_color
-              - label:
-                  x: 60
-                  y: 5
                   text: "SALÓN"
-                  text_font: nunito_20
                   text_color: text_primary
               - label:
-                  x: 60
+                  x: 10
                   y: 35
                   text: "Temperatura"
-                  text_font: nunito_14
                   text_color: text_secondary
               - label:
                   id: valor_temperatura_salon
-                  x: 60
+                  x: 10
                   y: 55
                   text: "--.- °C"
-                  text_font: nunito_20
                   text_color: text_primary
               - label:
-                  x: 160
+                  x: 120
                   y: 35
                   text: "Humedad"
-                  text_font: nunito_14
                   text_color: text_secondary
               - label:
                   id: valor_humedad_salon
-                  x: 160
+                  x: 120
                   y: 55
                   text: "-- %"
-                  text_font: nunito_20
                   text_color: text_primary
 
         # Tarjeta Dormitorio
@@ -759,40 +668,29 @@ lvgl:
               - label:
                   x: 10
                   y: 5
-                  text: "\U000F0597"
-                  text_font: mdi_40
-                  text_color: primary_color
-              - label:
-                  x: 60
-                  y: 5
                   text: "DORMITORIO"
-                  text_font: nunito_20
                   text_color: text_primary
               - label:
-                  x: 60
+                  x: 10
                   y: 35
                   text: "Temperatura"
-                  text_font: nunito_14
                   text_color: text_secondary
               - label:
                   id: valor_temperatura_dormitorio
-                  x: 60
+                  x: 10
                   y: 55
                   text: "--.- °C"
-                  text_font: nunito_20
                   text_color: text_primary
               - label:
-                  x: 160
+                  x: 120
                   y: 35
                   text: "Humedad"
-                  text_font: nunito_14
                   text_color: text_secondary
               - label:
                   id: valor_humedad_dormitorio
-                  x: 160
+                  x: 120
                   y: 55
                   text: "-- %"
-                  text_font: nunito_20
                   text_color: text_primary
 
         # ----------------------------------------------------
@@ -813,15 +711,13 @@ lvgl:
               - label:
                   x: 10
                   y: 5
-                  text: "\U000F03E4"
-                  text_font: mdi_40
-                  text_color: accent_color
+                  text: "PRESENCIA"
+                  text_color: text_secondary
               - label:
                   id: estado_presencia
-                  x: 60
-                  y: 20
+                  x: 10
+                  y: 30
                   text: "SIN DATOS"
-                  text_font: nunito_18
                   text_color: text_secondary
 
         # Tarjeta Ventanas
@@ -838,34 +734,29 @@ lvgl:
               - label:
                   x: 10
                   y: 5
-                  text: "\U000F03E0"
-                  text_font: mdi_40
-                  text_color: primary_color
+                  text: "VENTANAS"
+                  text_color: text_secondary
               - label:
-                  x: 60
-                  y: 5
+                  x: 10
+                  y: 25
                   text: "Salón:"
-                  text_font: nunito_14
                   text_color: text_secondary
               - label:
                   id: estado_ventana_salon
                   x: 60
                   y: 25
                   text: "--"
-                  text_font: nunito_16
                   text_color: text_primary
               - label:
-                  x: 60
+                  x: 10
                   y: 45
                   text: "Dorm:"
-                  text_font: nunito_14
                   text_color: text_secondary
               - label:
                   id: estado_ventana_dormitorio
-                  x: 100
+                  x: 60
                   y: 45
                   text: "--"
-                  text_font: nunito_16
                   text_color: text_primary
 
         # Tarjeta Aire
@@ -882,22 +773,19 @@ lvgl:
               - label:
                   x: 10
                   y: 5
-                  text: "\U000F076B"
-                  text_font: mdi_40
-                  text_color: accent_color
+                  text: "AIRE"
+                  text_color: text_secondary
               - label:
                   id: valor_temperatura_aire
-                  x: 60
-                  y: 20
+                  x: 10
+                  y: 25
                   text: "--.- °C"
-                  text_font: nunito_18
                   text_color: text_primary
               - label:
                   id: valor_humedad_aire
-                  x: 60
-                  y: 40
+                  x: 10
+                  y: 45
                   text: "-- %"
-                  text_font: nunito_16
                   text_color: text_secondary
 
         # ----------------------------------------------------
@@ -918,15 +806,7 @@ lvgl:
                   x: 0
                   y: 0
                   align: CENTER
-                  text: "\U000F0335"
-                  text_font: mdi_40
-                  text_color: accent_color
-              - label:
-                  x: 0
-                  y: 45
-                  align: CENTER
                   text: "LUZ SALÓN"
-                  text_font: nunito_16
                   text_color: text_primary
             on_click:
               - homeassistant.action:
@@ -948,15 +828,7 @@ lvgl:
                   x: 0
                   y: 0
                   align: CENTER
-                  text: "\U000F0335"
-                  text_font: mdi_40
-                  text_color: accent_color
-              - label:
-                  x: 0
-                  y: 45
-                  align: CENTER
                   text: "HABITACIÓN"
-                  text_font: nunito_16
                   text_color: text_primary
             on_click:
               - homeassistant.action:
@@ -978,15 +850,7 @@ lvgl:
                   x: 0
                   y: 0
                   align: CENTER
-                  text: "\U000F03E0"
-                  text_font: mdi_40
-                  text_color: primary_color
-              - label:
-                  x: 0
-                  y: 45
-                  align: CENTER
                   text: "VENTANAS"
-                  text_font: nunito_16
                   text_color: text_primary
             on_click:
               - homeassistant.action:
@@ -1006,7 +870,7 @@ lvgl:
             id: boton_volver_salon
             x: 10
             y: 10
-            width: 60
+            width: 100
             height: 50
             bg_color: bg_card
             bg_opa: 100%
@@ -1016,17 +880,15 @@ lvgl:
                   x: 0
                   y: 0
                   align: CENTER
-                  text: "\U000F0349"
-                  text_font: mdi_40
+                  text: "VOLVER"
                   text_color: text_primary
             on_click:
               - lvgl.page.show: pagina_principal
 
         - label:
-            x: 80
+            x: 130
             y: 20
             text: "DETALLES - SALÓN"
-            text_font: nunito_24
             text_color: text_primary
 
         # Temperatura grande
@@ -1043,21 +905,13 @@ lvgl:
               - label:
                   x: 20
                   y: 20
-                  text: "\U000F0392"
-                  text_font: mdi_40
-                  text_color: accent_color
-              - label:
-                  x: 80
-                  y: 20
                   text: "Temperatura"
-                  text_font: nunito_20
                   text_color: text_secondary
               - label:
                   id: valor_temperatura_salon
-                  x: 80
+                  x: 20
                   y: 60
                   text: "--.- °C"
-                  text_font: nunito_24
                   text_color: text_primary
 
         # Humedad grande
@@ -1074,21 +928,13 @@ lvgl:
               - label:
                   x: 10
                   y: 10
-                  text: "\U000F03E3"
-                  text_font: mdi_40
-                  text_color: primary_color
-              - label:
-                  x: 60
-                  y: 10
                   text: "Humedad"
-                  text_font: nunito_18
                   text_color: text_secondary
               - label:
                   id: valor_humedad_salon
-                  x: 60
+                  x: 10
                   y: 45
                   text: "-- %"
-                  text_font: nunito_22
                   text_color: text_primary
 
         # Iluminación
@@ -1105,21 +951,13 @@ lvgl:
               - label:
                   x: 10
                   y: 10
-                  text: "\U000F0596"
-                  text_font: mdi_40
-                  text_color: accent_color
-              - label:
-                  x: 60
-                  y: 10
                   text: "Iluminación"
-                  text_font: nunito_18
                   text_color: text_secondary
               - label:
                   id: valor_iluminacion_salon
-                  x: 60
+                  x: 10
                   y: 45
                   text: "--- lx"
-                  text_font: nunito_22
                   text_color: text_primary
 
         # Botón de luz
@@ -1137,15 +975,7 @@ lvgl:
                   x: 0
                   y: 0
                   align: CENTER
-                  text: "\U000F0335"
-                  text_font: mdi_40
-                  text_color: accent_color
-              - label:
-                  x: 0
-                  y: 45
-                  align: CENTER
                   text: "TOGGLE LUZ SALÓN"
-                  text_font: nunito_20
                   text_color: text_primary
             on_click:
               - homeassistant.action:
@@ -1165,7 +995,7 @@ lvgl:
             id: boton_volver_dormitorio
             x: 10
             y: 10
-            width: 60
+            width: 100
             height: 50
             bg_color: bg_card
             bg_opa: 100%
@@ -1175,17 +1005,15 @@ lvgl:
                   x: 0
                   y: 0
                   align: CENTER
-                  text: "\U000F0349"
-                  text_font: mdi_40
+                  text: "VOLVER"
                   text_color: text_primary
             on_click:
               - lvgl.page.show: pagina_principal
 
         - label:
-            x: 80
+            x: 130
             y: 20
             text: "DETALLES - DORMITORIO"
-            text_font: nunito_24
             text_color: text_primary
 
         # Temperatura grande
@@ -1202,21 +1030,13 @@ lvgl:
               - label:
                   x: 20
                   y: 20
-                  text: "\U000F0392"
-                  text_font: mdi_40
-                  text_color: accent_color
-              - label:
-                  x: 80
-                  y: 20
                   text: "Temperatura"
-                  text_font: nunito_20
                   text_color: text_secondary
               - label:
                   id: valor_temperatura_dormitorio
-                  x: 80
+                  x: 20
                   y: 60
                   text: "--.- °C"
-                  text_font: nunito_24
                   text_color: text_primary
 
         # Humedad grande
@@ -1233,21 +1053,13 @@ lvgl:
               - label:
                   x: 10
                   y: 10
-                  text: "\U000F03E3"
-                  text_font: mdi_40
-                  text_color: primary_color
-              - label:
-                  x: 60
-                  y: 10
                   text: "Humedad"
-                  text_font: nunito_18
                   text_color: text_secondary
               - label:
                   id: valor_humedad_dormitorio
-                  x: 60
+                  x: 10
                   y: 45
                   text: "-- %"
-                  text_font: nunito_22
                   text_color: text_primary
 
         # Botón de luz
@@ -1265,15 +1077,7 @@ lvgl:
                   x: 0
                   y: 0
                   align: CENTER
-                  text: "\U000F0335"
-                  text_font: mdi_40
-                  text_color: accent_color
-              - label:
-                  x: 0
-                  y: 45
-                  align: CENTER
                   text: "TOGGLE LUZ HABITACIÓN"
-                  text_font: nunito_20
                   text_color: text_primary
             on_click:
               - homeassistant.action:
