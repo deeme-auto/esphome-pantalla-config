@@ -144,13 +144,13 @@ time:
               id: hora_actual
               text: !lambda |-
                 char buf[6];
-                strftime(buf, sizeof(buf), "%H:%M", id(hora_tiempo).now_local());
+                strftime(buf, sizeof(buf), "%H:%M", id(hora_tiempo).now());
                 return buf;
           - lvgl.label.update:
               id: fecha_actual
               text: !lambda |-
                 char buf[11];
-                strftime(buf, sizeof(buf), "%d/%m/%Y", id(hora_tiempo).now_local());
+                strftime(buf, sizeof(buf), "%d/%m/%Y", id(hora_tiempo).now());
                 return buf;
 
 # ============================================================
