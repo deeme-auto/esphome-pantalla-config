@@ -550,15 +550,15 @@ lvgl:
 
   theme:
     button:
-      bg_color: bg_card
+      bg_color: 0x2B2927
       bg_opa: 100%
       border_width: 0
       radius: 15
-      text_color: text_primary
+      text_color: 0xD9D5CF
       text_font: font_medium
 
     label:
-      text_color: text_primary
+      text_color: 0xD9D5CF
       text_font: font_small
 
   pages:
@@ -582,7 +582,7 @@ lvgl:
             y: 0
             width: 480
             height: 50
-            bg_color: bg_card
+            bg_color: 0x2B2927
             bg_opa: 100%
             radius: 0
             pad_all: 0
@@ -593,14 +593,14 @@ lvgl:
                   x: 20
                   y: 15
                   text: "00:00"
-                  text_color: text_primary
+                  text_color: 0xD9D5CF
               - label:
                   id: fecha_actual
                   text_font: font_medium
                   x: 300
                   y: 15
                   text: "--/--/----"
-                  text_color: text_secondary
+                  text_color: 0x8F8A82
 
         # ----------------------------------------------------
         # FILA 1: Tarjetas principales
@@ -612,7 +612,7 @@ lvgl:
             y: 60
             width: 150
             height: 100
-            bg_color: bg_card
+            bg_color: 0x2B2927
             bg_opa: 100%
             radius: 15
             pad_all: 10
@@ -621,14 +621,14 @@ lvgl:
                   x: 10
                   y: 5
                   text: "TEMP"
-                  text_color: text_secondary
+                  text_color: 0x8F8A82
               - label:
                   id: main_valor_temperatura_general
                   text_font: font_large
                   x: 10
                   y: 30
                   text: "--.- °C"
-                  text_color: text_primary
+                  text_color: 0xD9D5CF
 
         # Tarjeta Humedad General
         - container:
@@ -636,7 +636,7 @@ lvgl:
             y: 60
             width: 150
             height: 100
-            bg_color: bg_card
+            bg_color: 0x2B2927
             bg_opa: 100%
             radius: 15
             pad_all: 10
@@ -645,14 +645,14 @@ lvgl:
                   x: 10
                   y: 5
                   text: "HUMEDAD"
-                  text_color: text_secondary
+                  text_color: 0x8F8A82
               - label:
                   id: main_valor_humedad_general
                   text_font: font_large
                   x: 10
                   y: 30
                   text: "-- %"
-                  text_color: text_primary
+                  text_color: 0xD9D5CF
 
         # Tarjeta Iluminación
         - container:
@@ -660,7 +660,7 @@ lvgl:
             y: 60
             width: 150
             height: 100
-            bg_color: bg_card
+            bg_color: 0x2B2927
             bg_opa: 100%
             radius: 15
             pad_all: 10
@@ -669,14 +669,14 @@ lvgl:
                   x: 10
                   y: 5
                   text: "LUZ"
-                  text_color: text_secondary
+                  text_color: 0x8F8A82
               - label:
                   id: main_valor_iluminacion_salon
                   text_font: font_large
                   x: 10
                   y: 30
                   text: "--- lx"
-                  text_color: text_primary
+                  text_color: 0xD9D5CF
 
         # ----------------------------------------------------
         # FILA 2: Salón y Dormitorio
@@ -688,7 +688,7 @@ lvgl:
             y: 170
             width: 230
             height: 120
-            bg_color: bg_card
+            bg_color: 0x2B2927
             bg_opa: 100%
             radius: 15
             pad_all: 10
@@ -697,31 +697,31 @@ lvgl:
                   x: 10
                   y: 5
                   text: "SALÓN"
-                  text_color: text_primary
+                  text_color: 0xD9D5CF
               - label:
                   x: 10
                   y: 35
                   text: "Temperatura"
-                  text_color: text_secondary
+                  text_color: 0x8F8A82
               - label:
                   id: main_valor_temperatura_salon
                   text_font: font_large
                   x: 10
                   y: 55
                   text: "--.- °C"
-                  text_color: text_primary
+                  text_color: 0xD9D5CF
               - label:
                   x: 120
                   y: 35
                   text: "Humedad"
-                  text_color: text_secondary
+                  text_color: 0x8F8A82
               - label:
                   id: main_valor_humedad_salon
                   text_font: font_large
                   x: 120
                   y: 55
                   text: "-- %"
-                  text_color: text_primary
+                  text_color: 0xD9D5CF
 
         # Tarjeta Dormitorio
         - container:
@@ -729,7 +729,7 @@ lvgl:
             y: 170
             width: 230
             height: 120
-            bg_color: bg_card
+            bg_color: 0x2B2927
             bg_opa: 100%
             radius: 15
             pad_all: 10
@@ -738,31 +738,31 @@ lvgl:
                   x: 10
                   y: 5
                   text: "DORMITORIO"
-                  text_color: text_primary
+                  text_color: 0xD9D5CF
               - label:
                   x: 10
                   y: 35
                   text: "Temperatura"
-                  text_color: text_secondary
+                  text_color: 0x8F8A82
               - label:
                   id: main_valor_temperatura_dormitorio
                   text_font: font_large
                   x: 10
                   y: 55
                   text: "--.- °C"
-                  text_color: text_primary
+                  text_color: 0xD9D5CF
               - label:
                   x: 120
                   y: 35
                   text: "Humedad"
-                  text_color: text_secondary
+                  text_color: 0x8F8A82
               - label:
                   id: main_valor_humedad_dormitorio
                   text_font: font_large
                   x: 120
                   y: 55
                   text: "-- %"
-                  text_color: text_primary
+                  text_color: 0xD9D5CF
 
         # ----------------------------------------------------
         # FILA 3: Presencia, Ventanas, Aire
@@ -774,7 +774,7 @@ lvgl:
             y: 300
             width: 150
             height: 80
-            bg_color: bg_card
+            bg_color: 0x2B2927
             bg_opa: 100%
             radius: 15
             pad_all: 10
@@ -783,21 +783,21 @@ lvgl:
                   x: 10
                   y: 5
                   text: "PRESENCIA"
-                  text_color: text_secondary
+                  text_color: 0x8F8A82
               - label:
                   id: main_estado_presencia
                   text_font: font_medium
                   x: 10
                   y: 30
                   text: "SIN DATOS"
-                  text_color: text_secondary
+                  text_color: 0x8F8A82
               - label:
                   id: main_estado_movimiento
                   text_font: font_medium
                   x: 10
                   y: 52
                   text: "SIN DATOS"
-                  text_color: text_secondary
+                  text_color: 0x8F8A82
 
         # Tarjeta Ventanas
         - container:
@@ -805,7 +805,7 @@ lvgl:
             y: 300
             width: 150
             height: 80
-            bg_color: bg_card
+            bg_color: 0x2B2927
             bg_opa: 100%
             radius: 15
             pad_all: 10
@@ -814,31 +814,31 @@ lvgl:
                   x: 10
                   y: 5
                   text: "VENTANAS"
-                  text_color: text_secondary
+                  text_color: 0x8F8A82
               - label:
                   x: 10
                   y: 25
                   text: "Salón:"
-                  text_color: text_secondary
+                  text_color: 0x8F8A82
               - label:
                   id: main_estado_ventana_salon
                   text_font: font_medium
                   x: 60
                   y: 25
                   text: "--"
-                  text_color: text_primary
+                  text_color: 0xD9D5CF
               - label:
                   x: 10
                   y: 45
                   text: "Dorm:"
-                  text_color: text_secondary
+                  text_color: 0x8F8A82
               - label:
                   id: main_estado_ventana_dormitorio
                   text_font: font_medium
                   x: 60
                   y: 45
                   text: "--"
-                  text_color: text_primary
+                  text_color: 0xD9D5CF
 
         # Tarjeta Aire
         - container:
@@ -846,7 +846,7 @@ lvgl:
             y: 300
             width: 150
             height: 80
-            bg_color: bg_card
+            bg_color: 0x2B2927
             bg_opa: 100%
             radius: 15
             pad_all: 10
@@ -855,21 +855,21 @@ lvgl:
                   x: 10
                   y: 5
                   text: "AIRE"
-                  text_color: text_secondary
+                  text_color: 0x8F8A82
               - label:
                   id: main_valor_temperatura_aire
                   text_font: font_large
                   x: 10
                   y: 25
                   text: "--.- °C"
-                  text_color: text_primary
+                  text_color: 0xD9D5CF
               - label:
                   id: main_valor_humedad_aire
                   text_font: font_large
                   x: 10
                   y: 45
                   text: "-- %"
-                  text_color: text_secondary
+                  text_color: 0x8F8A82
 
         # ----------------------------------------------------
         # FILA 4: Botones de control
@@ -881,7 +881,7 @@ lvgl:
             y: 390
             width: 150
             height: 80
-            bg_color: bg_card
+            bg_color: 0x2B2927
             bg_opa: 100%
             radius: 15
             widgets:
@@ -890,7 +890,7 @@ lvgl:
                   y: 0
                   align: CENTER
                   text: "LUZ SALÓN"
-                  text_color: text_primary
+                  text_color: 0xD9D5CF
             on_click:
               - homeassistant.action:
                   action: light.toggle
@@ -903,7 +903,7 @@ lvgl:
             y: 390
             width: 150
             height: 80
-            bg_color: bg_card
+            bg_color: 0x2B2927
             bg_opa: 100%
             radius: 15
             widgets:
@@ -912,7 +912,7 @@ lvgl:
                   y: 0
                   align: CENTER
                   text: "HABITACIÓN"
-                  text_color: text_primary
+                  text_color: 0xD9D5CF
             on_click:
               - homeassistant.action:
                   action: light.toggle
@@ -925,7 +925,7 @@ lvgl:
             y: 390
             width: 150
             height: 80
-            bg_color: bg_card
+            bg_color: 0x2B2927
             bg_opa: 100%
             radius: 15
             widgets:
@@ -934,7 +934,7 @@ lvgl:
                   y: 0
                   align: CENTER
                   text: "ENCHUFE"
-                  text_color: text_primary
+                  text_color: 0xD9D5CF
             on_click:
               - homeassistant.action:
                   action: switch.toggle
@@ -956,7 +956,7 @@ lvgl:
             y: 10
             width: 100
             height: 50
-            bg_color: bg_card
+            bg_color: 0x2B2927
             bg_opa: 100%
             radius: 10
             widgets:
@@ -965,7 +965,7 @@ lvgl:
                   y: 0
                   align: CENTER
                   text: "VOLVER"
-                  text_color: text_primary
+                  text_color: 0xD9D5CF
             on_click:
               - lvgl.page.show: pagina_principal
 
@@ -973,7 +973,7 @@ lvgl:
             x: 130
             y: 20
             text: "DETALLES - SALÓN"
-            text_color: text_primary
+            text_color: 0xD9D5CF
 
         # Temperatura grande
         - container:
@@ -981,7 +981,7 @@ lvgl:
             y: 80
             width: 440
             height: 120
-            bg_color: bg_card
+            bg_color: 0x2B2927
             bg_opa: 100%
             radius: 15
             pad_all: 20
@@ -990,14 +990,14 @@ lvgl:
                   x: 20
                   y: 20
                   text: "Temperatura"
-                  text_color: text_secondary
+                  text_color: 0x8F8A82
               - label:
                   id: detail_valor_temperatura_salon
                   text_font: font_large
                   x: 20
                   y: 60
                   text: "--.- °C"
-                  text_color: text_primary
+                  text_color: 0xD9D5CF
 
         # Humedad grande
         - container:
@@ -1005,7 +1005,7 @@ lvgl:
             y: 220
             width: 210
             height: 100
-            bg_color: bg_card
+            bg_color: 0x2B2927
             bg_opa: 100%
             radius: 15
             pad_all: 15
@@ -1014,14 +1014,14 @@ lvgl:
                   x: 10
                   y: 10
                   text: "Humedad"
-                  text_color: text_secondary
+                  text_color: 0x8F8A82
               - label:
                   id: detail_valor_humedad_salon
                   text_font: font_large
                   x: 10
                   y: 45
                   text: "-- %"
-                  text_color: text_primary
+                  text_color: 0xD9D5CF
 
         # Iluminación
         - container:
@@ -1029,7 +1029,7 @@ lvgl:
             y: 220
             width: 210
             height: 100
-            bg_color: bg_card
+            bg_color: 0x2B2927
             bg_opa: 100%
             radius: 15
             pad_all: 15
@@ -1038,14 +1038,14 @@ lvgl:
                   x: 10
                   y: 10
                   text: "Iluminación"
-                  text_color: text_secondary
+                  text_color: 0x8F8A82
               - label:
                   id: detail_valor_iluminacion_salon
                   text_font: font_large
                   x: 10
                   y: 45
                   text: "--- lx"
-                  text_color: text_primary
+                  text_color: 0xD9D5CF
 
         # Botón de luz
         - button:
@@ -1054,7 +1054,7 @@ lvgl:
             y: 340
             width: 440
             height: 80
-            bg_color: bg_card
+            bg_color: 0x2B2927
             bg_opa: 100%
             radius: 15
             widgets:
@@ -1063,7 +1063,7 @@ lvgl:
                   y: 0
                   align: CENTER
                   text: "TOGGLE LUZ SALÓN"
-                  text_color: text_primary
+                  text_color: 0xD9D5CF
             on_click:
               - homeassistant.action:
                   action: light.toggle
@@ -1085,7 +1085,7 @@ lvgl:
             y: 10
             width: 100
             height: 50
-            bg_color: bg_card
+            bg_color: 0x2B2927
             bg_opa: 100%
             radius: 10
             widgets:
@@ -1094,7 +1094,7 @@ lvgl:
                   y: 0
                   align: CENTER
                   text: "VOLVER"
-                  text_color: text_primary
+                  text_color: 0xD9D5CF
             on_click:
               - lvgl.page.show: pagina_principal
 
@@ -1102,7 +1102,7 @@ lvgl:
             x: 130
             y: 20
             text: "DETALLES - DORMITORIO"
-            text_color: text_primary
+            text_color: 0xD9D5CF
 
         # Temperatura grande
         - container:
@@ -1110,7 +1110,7 @@ lvgl:
             y: 80
             width: 440
             height: 120
-            bg_color: bg_card
+            bg_color: 0x2B2927
             bg_opa: 100%
             radius: 15
             pad_all: 20
@@ -1119,14 +1119,14 @@ lvgl:
                   x: 20
                   y: 20
                   text: "Temperatura"
-                  text_color: text_secondary
+                  text_color: 0x8F8A82
               - label:
                   id: detail_valor_temperatura_dormitorio
                   text_font: font_large
                   x: 20
                   y: 60
                   text: "--.- °C"
-                  text_color: text_primary
+                  text_color: 0xD9D5CF
 
         # Humedad grande
         - container:
@@ -1134,7 +1134,7 @@ lvgl:
             y: 220
             width: 210
             height: 100
-            bg_color: bg_card
+            bg_color: 0x2B2927
             bg_opa: 100%
             radius: 15
             pad_all: 15
@@ -1143,14 +1143,14 @@ lvgl:
                   x: 10
                   y: 10
                   text: "Humedad"
-                  text_color: text_secondary
+                  text_color: 0x8F8A82
               - label:
                   id: detail_valor_humedad_dormitorio
                   text_font: font_large
                   x: 10
                   y: 45
                   text: "-- %"
-                  text_color: text_primary
+                  text_color: 0xD9D5CF
 
         # Botón de luz
         - button:
@@ -1159,7 +1159,7 @@ lvgl:
             y: 340
             width: 440
             height: 80
-            bg_color: bg_card
+            bg_color: 0x2B2927
             bg_opa: 100%
             radius: 15
             widgets:
@@ -1168,7 +1168,7 @@ lvgl:
                   y: 0
                   align: CENTER
                   text: "TOGGLE LUZ HABITACIÓN"
-                  text_color: text_primary
+                  text_color: 0xD9D5CF
             on_click:
               - homeassistant.action:
                   action: light.toggle
