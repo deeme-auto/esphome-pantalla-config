@@ -168,7 +168,12 @@ sensor:
     entity_id: sensor.sonoff_snzb_02d_temperatura
     on_value:
       - lvgl.label.update:
-          id: valor_temperatura_salon
+          id: main_valor_temperatura_salon
+          text:
+            format: "%.1f °C"
+            args: [ 'x' ]
+      - lvgl.label.update:
+          id: detail_valor_temperatura_salon
           text:
             format: "%.1f °C"
             args: [ 'x' ]
@@ -177,21 +182,30 @@ sensor:
             - lambda: 'return x > 25;'
           then:
             - lvgl.label.update:
-                id: valor_temperatura_salon
+                id: main_valor_temperatura_salon
+                text_color: 0xFF5722
+            - lvgl.label.update:
+                id: detail_valor_temperatura_salon
                 text_color: 0xFF5722
       - if:
           condition:
             - lambda: 'return x <= 25 && x >= 20;'
           then:
             - lvgl.label.update:
-                id: valor_temperatura_salon
+                id: main_valor_temperatura_salon
+                text_color: 0x4CAF50
+            - lvgl.label.update:
+                id: detail_valor_temperatura_salon
                 text_color: 0x4CAF50
       - if:
           condition:
             - lambda: 'return x < 20;'
           then:
             - lvgl.label.update:
-                id: valor_temperatura_salon
+                id: main_valor_temperatura_salon
+                text_color: 0x2196F3
+            - lvgl.label.update:
+                id: detail_valor_temperatura_salon
                 text_color: 0x2196F3
 
   - platform: homeassistant
@@ -199,7 +213,12 @@ sensor:
     entity_id: sensor.sonoff_snzb_02d_humedad
     on_value:
       - lvgl.label.update:
-          id: valor_humedad_salon
+          id: main_valor_humedad_salon
+          text:
+            format: "%.0f %%"
+            args: [ 'x' ]
+      - lvgl.label.update:
+          id: detail_valor_humedad_salon
           text:
             format: "%.0f %%"
             args: [ 'x' ]
@@ -208,7 +227,10 @@ sensor:
             - lambda: 'return x > 60;'
           then:
             - lvgl.label.update:
-                id: valor_humedad_salon
+                id: main_valor_humedad_salon
+                text_color: 0x03A9F4
+            - lvgl.label.update:
+                id: detail_valor_humedad_salon
                 text_color: 0x03A9F4
 
   - platform: homeassistant
@@ -216,7 +238,7 @@ sensor:
     entity_id: sensor.sensor_iluminacion_iluminancia
     on_value:
       - lvgl.label.update:
-          id: valor_iluminacion_salon
+          id: main_valor_iluminacion_salon
           text:
             format: "%.0f lx"
             args: [ 'x' ]
@@ -230,7 +252,7 @@ sensor:
     entity_id: sensor.house_temperature
     on_value:
       - lvgl.label.update:
-          id: valor_temperatura_general
+          id: main_valor_temperatura_general
           text:
             format: "%.1f °C"
             args: [ 'x' ]
@@ -239,21 +261,21 @@ sensor:
             - lambda: 'return x > 25;'
           then:
             - lvgl.label.update:
-                id: valor_temperatura_general
+                id: main_valor_temperatura_general
                 text_color: 0xFF5722
       - if:
           condition:
             - lambda: 'return x <= 25 && x >= 20;'
           then:
             - lvgl.label.update:
-                id: valor_temperatura_general
+                id: main_valor_temperatura_general
                 text_color: 0x4CAF50
       - if:
           condition:
             - lambda: 'return x < 20;'
           then:
             - lvgl.label.update:
-                id: valor_temperatura_general
+                id: main_valor_temperatura_general
                 text_color: 0x2196F3
 
   - platform: homeassistant
@@ -261,7 +283,7 @@ sensor:
     entity_id: sensor.house_humidity
     on_value:
       - lvgl.label.update:
-          id: valor_humedad_general
+          id: main_valor_humedad_general
           text:
             format: "%.0f %%"
             args: [ 'x' ]
@@ -275,7 +297,12 @@ sensor:
     entity_id: sensor.tze200_cirvgep4_ts0601_temperatura
     on_value:
       - lvgl.label.update:
-          id: valor_temperatura_dormitorio
+          id: main_valor_temperatura_dormitorio
+          text:
+            format: "%.1f °C"
+            args: [ 'x' ]
+      - lvgl.label.update:
+          id: detail_valor_temperatura_dormitorio
           text:
             format: "%.1f °C"
             args: [ 'x' ]
@@ -284,21 +311,30 @@ sensor:
             - lambda: 'return x > 25;'
           then:
             - lvgl.label.update:
-                id: valor_temperatura_dormitorio
+                id: main_valor_temperatura_dormitorio
+                text_color: 0xFF5722
+            - lvgl.label.update:
+                id: detail_valor_temperatura_dormitorio
                 text_color: 0xFF5722
       - if:
           condition:
             - lambda: 'return x <= 25 && x >= 20;'
           then:
             - lvgl.label.update:
-                id: valor_temperatura_dormitorio
+                id: main_valor_temperatura_dormitorio
+                text_color: 0x4CAF50
+            - lvgl.label.update:
+                id: detail_valor_temperatura_dormitorio
                 text_color: 0x4CAF50
       - if:
           condition:
             - lambda: 'return x < 20;'
           then:
             - lvgl.label.update:
-                id: valor_temperatura_dormitorio
+                id: main_valor_temperatura_dormitorio
+                text_color: 0x2196F3
+            - lvgl.label.update:
+                id: detail_valor_temperatura_dormitorio
                 text_color: 0x2196F3
 
   - platform: homeassistant
@@ -306,7 +342,12 @@ sensor:
     entity_id: sensor.tze200_cirvgep4_ts0601_humedad
     on_value:
       - lvgl.label.update:
-          id: valor_humedad_dormitorio
+          id: main_valor_humedad_dormitorio
+          text:
+            format: "%.0f %%"
+            args: [ 'x' ]
+      - lvgl.label.update:
+          id: detail_valor_humedad_dormitorio
           text:
             format: "%.0f %%"
             args: [ 'x' ]
@@ -320,7 +361,7 @@ sensor:
     entity_id: sensor.sensor_aire_conectado_temperatura
     on_value:
       - lvgl.label.update:
-          id: valor_temperatura_aire
+          id: main_valor_temperatura_aire
           text:
             format: "%.1f °C"
             args: [ 'x' ]
@@ -330,7 +371,7 @@ sensor:
     entity_id: sensor.sensor_aire_conectado_humedad
     on_value:
       - lvgl.label.update:
-          id: valor_humedad_aire
+          id: main_valor_humedad_aire
           text:
             format: "%.0f %%"
             args: [ 'x' ]
@@ -344,7 +385,7 @@ sensor:
     entity_id: sensor.smart_presence_sensor_iluminancia
     on_value:
       - lvgl.label.update:
-          id: valor_iluminancia_presencia
+          id: main_valor_iluminancia_presencia
           text:
             format: "%.0f lx"
             args: [ 'x' ]
@@ -366,7 +407,7 @@ binary_sensor:
     on_state:
       then:
         - lvgl.label.update:
-            id: estado_movimiento
+            id: main_estado_movimiento
             text: !lambda |-
               return std::string(x ? "MOVIMIENTO" : "SIN MOVIMIENTO");
         - if:
@@ -374,14 +415,14 @@ binary_sensor:
               - lambda: 'return x;'
             then:
               - lvgl.label.update:
-                  id: estado_movimiento
+                  id: main_estado_movimiento
                   text_color: 0x4CAF50
         - if:
             condition:
               - lambda: 'return !x;'
             then:
               - lvgl.label.update:
-                  id: estado_movimiento
+                  id: main_estado_movimiento
                   text_color: 0x757575
 
   # ----------------------------------------------------------
@@ -395,7 +436,7 @@ binary_sensor:
     on_state:
       then:
         - lvgl.label.update:
-            id: estado_presencia
+            id: main_estado_presencia
             text: !lambda |-
               return std::string(x ? "PRESENCIA" : "SIN PRESENCIA");
         - if:
@@ -403,14 +444,14 @@ binary_sensor:
               - lambda: 'return x;'
             then:
               - lvgl.label.update:
-                  id: estado_presencia
+                  id: main_estado_presencia
                   text_color: 0x4CAF50
         - if:
             condition:
               - lambda: 'return !x;'
             then:
               - lvgl.label.update:
-                  id: estado_presencia
+                  id: main_estado_presencia
                   text_color: 0x757575
 
   # ----------------------------------------------------------
@@ -424,7 +465,7 @@ binary_sensor:
     on_state:
       then:
         - lvgl.label.update:
-            id: estado_ventana_salon
+            id: main_estado_ventana_salon
             text: !lambda |-
               return std::string(x ? "ABIERTA" : "CERRADA");
         - if:
@@ -432,14 +473,14 @@ binary_sensor:
               - lambda: 'return x;'
             then:
               - lvgl.label.update:
-                  id: estado_ventana_salon
+                  id: main_estado_ventana_salon
                   text_color: 0xFF9800
         - if:
             condition:
               - lambda: 'return !x;'
             then:
               - lvgl.label.update:
-                  id: estado_ventana_salon
+                  id: main_estado_ventana_salon
                   text_color: 0x4CAF50
 
   # ----------------------------------------------------------
@@ -453,7 +494,7 @@ binary_sensor:
     on_state:
       then:
         - lvgl.label.update:
-            id: estado_ventana_dormitorio
+            id: main_estado_ventana_dormitorio
             text: !lambda |-
               return std::string(x ? "ABIERTA" : "CERRADA");
         - if:
@@ -461,14 +502,14 @@ binary_sensor:
               - lambda: 'return x;'
             then:
               - lvgl.label.update:
-                  id: estado_ventana_dormitorio
+                  id: main_estado_ventana_dormitorio
                   text_color: 0xFF9800
         - if:
             condition:
               - lambda: 'return !x;'
             then:
               - lvgl.label.update:
-                  id: estado_ventana_dormitorio
+                  id: main_estado_ventana_dormitorio
                   text_color: 0x4CAF50
 
 # ============================================================
@@ -559,7 +600,7 @@ lvgl:
                   text: "TEMP"
                   text_color: text_secondary
               - label:
-                  id: valor_temperatura_general
+                  id: main_valor_temperatura_general
                   x: 10
                   y: 30
                   text: "--.- °C"
@@ -582,7 +623,7 @@ lvgl:
                   text: "HUMEDAD"
                   text_color: text_secondary
               - label:
-                  id: valor_humedad_general
+                  id: main_valor_humedad_general
                   x: 10
                   y: 30
                   text: "-- %"
@@ -605,7 +646,7 @@ lvgl:
                   text: "LUZ"
                   text_color: text_secondary
               - label:
-                  id: valor_iluminacion_salon
+                  id: main_valor_iluminacion_salon
                   x: 10
                   y: 30
                   text: "--- lx"
@@ -637,7 +678,7 @@ lvgl:
                   text: "Temperatura"
                   text_color: text_secondary
               - label:
-                  id: valor_temperatura_salon
+                  id: main_valor_temperatura_salon
                   x: 10
                   y: 55
                   text: "--.- °C"
@@ -648,7 +689,7 @@ lvgl:
                   text: "Humedad"
                   text_color: text_secondary
               - label:
-                  id: valor_humedad_salon
+                  id: main_valor_humedad_salon
                   x: 120
                   y: 55
                   text: "-- %"
@@ -676,7 +717,7 @@ lvgl:
                   text: "Temperatura"
                   text_color: text_secondary
               - label:
-                  id: valor_temperatura_dormitorio
+                  id: main_valor_temperatura_dormitorio
                   x: 10
                   y: 55
                   text: "--.- °C"
@@ -687,7 +728,7 @@ lvgl:
                   text: "Humedad"
                   text_color: text_secondary
               - label:
-                  id: valor_humedad_dormitorio
+                  id: main_valor_humedad_dormitorio
                   x: 120
                   y: 55
                   text: "-- %"
@@ -714,7 +755,7 @@ lvgl:
                   text: "PRESENCIA"
                   text_color: text_secondary
               - label:
-                  id: estado_presencia
+                  id: main_estado_presencia
                   x: 10
                   y: 30
                   text: "SIN DATOS"
@@ -742,7 +783,7 @@ lvgl:
                   text: "Salón:"
                   text_color: text_secondary
               - label:
-                  id: estado_ventana_salon
+                  id: main_estado_ventana_salon
                   x: 60
                   y: 25
                   text: "--"
@@ -753,7 +794,7 @@ lvgl:
                   text: "Dorm:"
                   text_color: text_secondary
               - label:
-                  id: estado_ventana_dormitorio
+                  id: main_estado_ventana_dormitorio
                   x: 60
                   y: 45
                   text: "--"
@@ -776,13 +817,13 @@ lvgl:
                   text: "AIRE"
                   text_color: text_secondary
               - label:
-                  id: valor_temperatura_aire
+                  id: main_valor_temperatura_aire
                   x: 10
                   y: 25
                   text: "--.- °C"
                   text_color: text_primary
               - label:
-                  id: valor_humedad_aire
+                  id: main_valor_humedad_aire
                   x: 10
                   y: 45
                   text: "-- %"
@@ -908,7 +949,7 @@ lvgl:
                   text: "Temperatura"
                   text_color: text_secondary
               - label:
-                  id: valor_temperatura_salon
+                  id: detail_valor_temperatura_salon
                   x: 20
                   y: 60
                   text: "--.- °C"
@@ -931,7 +972,7 @@ lvgl:
                   text: "Humedad"
                   text_color: text_secondary
               - label:
-                  id: valor_humedad_salon
+                  id: detail_valor_humedad_salon
                   x: 10
                   y: 45
                   text: "-- %"
@@ -954,7 +995,7 @@ lvgl:
                   text: "Iluminación"
                   text_color: text_secondary
               - label:
-                  id: valor_iluminacion_salon
+                  id: main_valor_iluminacion_salon
                   x: 10
                   y: 45
                   text: "--- lx"
@@ -1033,7 +1074,7 @@ lvgl:
                   text: "Temperatura"
                   text_color: text_secondary
               - label:
-                  id: valor_temperatura_dormitorio
+                  id: detail_valor_temperatura_dormitorio
                   x: 20
                   y: 60
                   text: "--.- °C"
@@ -1056,7 +1097,7 @@ lvgl:
                   text: "Humedad"
                   text_color: text_secondary
               - label:
-                  id: valor_humedad_dormitorio
+                  id: detail_valor_humedad_dormitorio
                   x: 10
                   y: 45
                   text: "-- %"
