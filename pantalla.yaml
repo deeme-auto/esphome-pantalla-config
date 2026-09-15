@@ -130,6 +130,30 @@ touchscreen:
     display: tft_display
 
 # ============================================================
+# HORA / FECHA (SNTP)
+# ============================================================
+
+time:
+  - platform: sntp
+    id: hora_tiempo
+    on_time:
+      - seconds: 0
+        minutes: /1
+        then:
+          - lvgl.label.update:
+              id: hora_actual
+              text: !lambda |-
+                char buf[6];
+                strftime(buf, sizeof(buf), "%H:%M", id(hora_tiempo).now_local());
+                return buf;
+          - lvgl.label.update:
+              id: fecha_actual
+              text: !lambda |-
+                char buf[11];
+                strftime(buf, sizeof(buf), "%d/%m/%Y", id(hora_tiempo).now_local());
+                return buf;
+
+# ============================================================
 # COLORES PERSONALIZADOS
 # ============================================================
 
@@ -188,12 +212,12 @@ sensor:
       - lvgl.label.update:
           id: main_valor_temperatura_salon
           text:
-            format: "%.1f °C"
+            format: "%.1fC"
             args: [ 'x' ]
       - lvgl.label.update:
           id: detail_valor_temperatura_salon
           text:
-            format: "%.1f °C"
+            format: "%.1fC"
             args: [ 'x' ]
       - if:
           condition:
@@ -272,7 +296,7 @@ sensor:
       - lvgl.label.update:
           id: main_valor_temperatura_general
           text:
-            format: "%.1f °C"
+            format: "%.1fC"
             args: [ 'x' ]
       - if:
           condition:
@@ -317,12 +341,12 @@ sensor:
       - lvgl.label.update:
           id: main_valor_temperatura_dormitorio
           text:
-            format: "%.1f °C"
+            format: "%.1fC"
             args: [ 'x' ]
       - lvgl.label.update:
           id: detail_valor_temperatura_dormitorio
           text:
-            format: "%.1f °C"
+            format: "%.1fC"
             args: [ 'x' ]
       - if:
           condition:
@@ -381,7 +405,7 @@ sensor:
       - lvgl.label.update:
           id: main_valor_temperatura_aire
           text:
-            format: "%.1f °C"
+            format: "%.1fC"
             args: [ 'x' ]
 
   - platform: homeassistant
@@ -627,7 +651,7 @@ lvgl:
                   text_font: font_large
                   x: 10
                   y: 30
-                  text: "--.- °C"
+                  text: "--.- C"
                   text_color: 0xD9D5CF
 
         # Tarjeta Humedad General
@@ -696,7 +720,7 @@ lvgl:
               - label:
                   x: 10
                   y: 5
-                  text: "SALÓN"
+                  text: "Salon"
                   text_color: 0xD9D5CF
               - label:
                   x: 10
@@ -708,7 +732,7 @@ lvgl:
                   text_font: font_large
                   x: 10
                   y: 55
-                  text: "--.- °C"
+                  text: "--.- C"
                   text_color: 0xD9D5CF
               - label:
                   x: 120
@@ -737,7 +761,7 @@ lvgl:
               - label:
                   x: 10
                   y: 5
-                  text: "DORMITORIO"
+                  text: "Dormitorio"
                   text_color: 0xD9D5CF
               - label:
                   x: 10
@@ -749,7 +773,7 @@ lvgl:
                   text_font: font_large
                   x: 10
                   y: 55
-                  text: "--.- °C"
+                  text: "--.- C"
                   text_color: 0xD9D5CF
               - label:
                   x: 120
@@ -818,7 +842,7 @@ lvgl:
               - label:
                   x: 10
                   y: 25
-                  text: "Salón:"
+                  text: "Salon:"
                   text_color: 0x8F8A82
               - label:
                   id: main_estado_ventana_salon
@@ -861,7 +885,7 @@ lvgl:
                   text_font: font_large
                   x: 10
                   y: 25
-                  text: "--.- °C"
+                  text: "--.- C"
                   text_color: 0xD9D5CF
               - label:
                   id: main_valor_humedad_aire
@@ -889,7 +913,7 @@ lvgl:
                   x: 0
                   y: 0
                   align: CENTER
-                  text: "LUZ SALÓN"
+                  text: "Luz Salon"
                   text_color: 0xD9D5CF
             on_click:
               - homeassistant.action:
@@ -911,7 +935,7 @@ lvgl:
                   x: 0
                   y: 0
                   align: CENTER
-                  text: "HABITACIÓN"
+                  text: "Habitacion"
                   text_color: 0xD9D5CF
             on_click:
               - homeassistant.action:
@@ -972,7 +996,7 @@ lvgl:
         - label:
             x: 130
             y: 20
-            text: "DETALLES - SALÓN"
+            text: "Detalles - Salon"
             text_color: 0xD9D5CF
 
         # Temperatura grande
@@ -996,7 +1020,7 @@ lvgl:
                   text_font: font_large
                   x: 20
                   y: 60
-                  text: "--.- °C"
+                  text: "--.- C"
                   text_color: 0xD9D5CF
 
         # Humedad grande
@@ -1037,7 +1061,7 @@ lvgl:
               - label:
                   x: 10
                   y: 10
-                  text: "Iluminación"
+                  text: "Iluminacion"
                   text_color: 0x8F8A82
               - label:
                   id: detail_valor_iluminacion_salon
@@ -1062,7 +1086,7 @@ lvgl:
                   x: 0
                   y: 0
                   align: CENTER
-                  text: "TOGGLE LUZ SALÓN"
+                  text: "Luz Salon"
                   text_color: 0xD9D5CF
             on_click:
               - homeassistant.action:
@@ -1101,7 +1125,7 @@ lvgl:
         - label:
             x: 130
             y: 20
-            text: "DETALLES - DORMITORIO"
+            text: "Detalles - Dormitorio"
             text_color: 0xD9D5CF
 
         # Temperatura grande
@@ -1125,7 +1149,7 @@ lvgl:
                   text_font: font_large
                   x: 20
                   y: 60
-                  text: "--.- °C"
+                  text: "--.- C"
                   text_color: 0xD9D5CF
 
         # Humedad grande
@@ -1167,7 +1191,7 @@ lvgl:
                   x: 0
                   y: 0
                   align: CENTER
-                  text: "TOGGLE LUZ HABITACIÓN"
+                  text: "Luz Habitacion"
                   text_color: 0xD9D5CF
             on_click:
               - homeassistant.action:
