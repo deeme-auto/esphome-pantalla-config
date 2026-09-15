@@ -385,7 +385,7 @@ sensor:
     entity_id: sensor.smart_presence_sensor_iluminancia
     on_value:
       - lvgl.label.update:
-          id: main_valor_iluminancia_presencia
+          id: main_valor_iluminacion_salon
           text:
             format: "%.0f lx"
             args: [ 'x' ]
