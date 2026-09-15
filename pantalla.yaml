@@ -932,13 +932,13 @@ lvgl:
                   x: 0
                   y: 0
                   align: CENTER
-                  text: "VENTANAS"
+                  text: "ENCHUFE"
                   text_color: text_primary
             on_click:
               - homeassistant.action:
-                  action: cover.toggle
+                  action: switch.toggle
                   data:
-                    entity_id: cover.ventana_salon
+                    entity_id: switch.enchufe_chino_1
 
     # ========================================================
     # PÁGINA DE DETALLES - SALÓN
