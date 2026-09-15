@@ -135,24 +135,23 @@ touchscreen:
 
 font:
   - file: "https://github.com/Templarian/MaterialDesign-Webfont/raw/v7.4.47/fonts/materialdesignicons-webfont.ttf"
-    id: mdi_icons_40
+    id: mdi_40
     size: 40
     bpp: 8
     glyphs:
-      - "$mdi_lightbulb"
-      - "$mdi_lightbulb_on"
-      - "$mdi_thermostat"
-      - "$mdi_water_percent"
-      - "$mdi_window_open"
-      - "$mdi_window_closed"
-      - "$mdi_motion_sensor"
-      - "$mdi_home"
-      - "$mdi_weather_sunny"
-      - "$mdi_weather_night"
-      - "$mdi_air_conditioner"
-      - "$mdi_fan"
-      - "$mdi_arrow_left"
-      - "$mdi_arrow_right"
+      - "\U000F0335"  # mdi-lightbulb
+      - "\U000F0336"  # mdi-lightbulb-on
+      - "\U000F0392"  # mdi-thermostat
+      - "\U000F03E3"  # mdi-water-percent
+      - "\U000F03E0"  # mdi-window-open
+      - "\U000F03DF"  # mdi-window-closed
+      - "\U000F03E4"  # mdi-motion-sensor
+      - "\U000F02DC"  # mdi-home
+      - "\U000F0596"  # mdi-weather-sunny
+      - "\U000F0597"  # mdi-weather-night
+      - "\U000F076B"  # mdi-air-conditioner
+      - "\U000F0349"  # mdi-arrow-left
+      - "\U000F034A"  # mdi-arrow-right
 
   - file: "https://github.com/google/fonts/raw/main/apache/nunito/Nunito-SemiBold.ttf"
     id: nunito_24
@@ -551,8 +550,6 @@ lvgl:
       border_width: 0
       radius: 15
       text_color: text_primary
-      press_bg_color: primary_color
-      press_bg_opa: 100%
 
     label:
       text_color: text_primary
@@ -615,8 +612,8 @@ lvgl:
               - label:
                   x: 10
                   y: 5
-                  text: "$mdi_thermostat"
-                  text_font: mdi_icons_40
+                  text: "\U000F0392"
+                  text_font: mdi_40
                   text_color: accent_color
               - label:
                   x: 60
@@ -646,8 +643,8 @@ lvgl:
               - label:
                   x: 10
                   y: 5
-                  text: "$mdi_water_percent"
-                  text_font: mdi_icons_40
+                  text: "\U000F03E3"
+                  text_font: mdi_40
                   text_color: primary_color
               - label:
                   x: 60
@@ -677,8 +674,8 @@ lvgl:
               - label:
                   x: 10
                   y: 5
-                  text: "$mdi_weather_sunny"
-                  text_font: mdi_icons_40
+                  text: "\U000F0596"
+                  text_font: mdi_40
                   text_color: accent_color
               - label:
                   x: 60
@@ -712,8 +709,8 @@ lvgl:
               - label:
                   x: 10
                   y: 5
-                  text: "$mdi_home"
-                  text_font: mdi_icons_40
+                  text: "\U000F02DC"
+                  text_font: mdi_40
                   text_color: primary_color
               - label:
                   x: 60
@@ -762,8 +759,8 @@ lvgl:
               - label:
                   x: 10
                   y: 5
-                  text: "$mdi_weather_night"
-                  text_font: mdi_icons_40
+                  text: "\U000F0597"
+                  text_font: mdi_40
                   text_color: primary_color
               - label:
                   x: 60
@@ -816,8 +813,8 @@ lvgl:
               - label:
                   x: 10
                   y: 5
-                  text: "$mdi_motion_sensor"
-                  text_font: mdi_icons_40
+                  text: "\U000F03E4"
+                  text_font: mdi_40
                   text_color: accent_color
               - label:
                   id: estado_presencia
@@ -841,8 +838,8 @@ lvgl:
               - label:
                   x: 10
                   y: 5
-                  text: "$mdi_window_open"
-                  text_font: mdi_icons_40
+                  text: "\U000F03E0"
+                  text_font: mdi_40
                   text_color: primary_color
               - label:
                   x: 60
@@ -885,8 +882,8 @@ lvgl:
               - label:
                   x: 10
                   y: 5
-                  text: "$mdi_air_conditioner"
-                  text_font: mdi_icons_40
+                  text: "\U000F076B"
+                  text_font: mdi_40
                   text_color: accent_color
               - label:
                   id: valor_temperatura_aire
@@ -921,8 +918,8 @@ lvgl:
                   x: 0
                   y: 0
                   align: CENTER
-                  text: "$mdi_lightbulb"
-                  text_font: mdi_icons_40
+                  text: "\U000F0335"
+                  text_font: mdi_40
                   text_color: accent_color
               - label:
                   x: 0
@@ -951,8 +948,8 @@ lvgl:
                   x: 0
                   y: 0
                   align: CENTER
-                  text: "$mdi_lightbulb"
-                  text_font: mdi_icons_40
+                  text: "\U000F0335"
+                  text_font: mdi_40
                   text_color: accent_color
               - label:
                   x: 0
@@ -981,8 +978,8 @@ lvgl:
                   x: 0
                   y: 0
                   align: CENTER
-                  text: "$mdi_window_open"
-                  text_font: mdi_icons_40
+                  text: "\U000F03E0"
+                  text_font: mdi_40
                   text_color: primary_color
               - label:
                   x: 0
@@ -1019,8 +1016,8 @@ lvgl:
                   x: 0
                   y: 0
                   align: CENTER
-                  text: "$mdi_arrow_left"
-                  text_font: mdi_icons_40
+                  text: "\U000F0349"
+                  text_font: mdi_40
                   text_color: text_primary
             on_click:
               - lvgl.page.show: pagina_principal
@@ -1046,8 +1043,8 @@ lvgl:
               - label:
                   x: 20
                   y: 20
-                  text: "$mdi_thermostat"
-                  text_font: mdi_icons_40
+                  text: "\U000F0392"
+                  text_font: mdi_40
                   text_color: accent_color
               - label:
                   x: 80
@@ -1077,8 +1074,8 @@ lvgl:
               - label:
                   x: 10
                   y: 10
-                  text: "$mdi_water_percent"
-                  text_font: mdi_icons_40
+                  text: "\U000F03E3"
+                  text_font: mdi_40
                   text_color: primary_color
               - label:
                   x: 60
@@ -1108,8 +1105,8 @@ lvgl:
               - label:
                   x: 10
                   y: 10
-                  text: "$mdi_weather_sunny"
-                  text_font: mdi_icons_40
+                  text: "\U000F0596"
+                  text_font: mdi_40
                   text_color: accent_color
               - label:
                   x: 60
@@ -1140,8 +1137,8 @@ lvgl:
                   x: 0
                   y: 0
                   align: CENTER
-                  text: "$mdi_lightbulb"
-                  text_font: mdi_icons_40
+                  text: "\U000F0335"
+                  text_font: mdi_40
                   text_color: accent_color
               - label:
                   x: 0
@@ -1178,8 +1175,8 @@ lvgl:
                   x: 0
                   y: 0
                   align: CENTER
-                  text: "$mdi_arrow_left"
-                  text_font: mdi_icons_40
+                  text: "\U000F0349"
+                  text_font: mdi_40
                   text_color: text_primary
             on_click:
               - lvgl.page.show: pagina_principal
@@ -1205,8 +1202,8 @@ lvgl:
               - label:
                   x: 20
                   y: 20
-                  text: "$mdi_thermostat"
-                  text_font: mdi_icons_40
+                  text: "\U000F0392"
+                  text_font: mdi_40
                   text_color: accent_color
               - label:
                   x: 80
@@ -1236,8 +1233,8 @@ lvgl:
               - label:
                   x: 10
                   y: 10
-                  text: "$mdi_water_percent"
-                  text_font: mdi_icons_40
+                  text: "\U000F03E3"
+                  text_font: mdi_40
                   text_color: primary_color
               - label:
                   x: 60
@@ -1268,8 +1265,8 @@ lvgl:
                   x: 0
                   y: 0
                   align: CENTER
-                  text: "$mdi_lightbulb"
-                  text_font: mdi_icons_40
+                  text: "\U000F0335"
+                  text_font: mdi_40
                   text_color: accent_color
               - label:
                   x: 0
