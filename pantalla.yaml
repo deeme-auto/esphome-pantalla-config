@@ -130,10 +130,203 @@ touchscreen:
     display: tft_display
 
 # ============================================================
-# LVGL CONFIGURATION
+# SENSORES DE HOME ASSISTANT
+# ============================================================
+
+sensor:
+
+  # ----------------------------------------------------------
+  # Salón
+  # ----------------------------------------------------------
+
+  - platform: homeassistant
+    id: temperatura_salon
+    entity_id: sensor.sonoff_snzb_02d_temperatura
+    on_value:
+      - lvgl.label.update:
+          id: valor_temperatura_salon
+          text:
+            format: "%.1f °C"
+            args: [ 'x' ]
+
+  - platform: homeassistant
+    id: humedad_salon
+    entity_id: sensor.sonoff_snzb_02d_humedad
+    on_value:
+      - lvgl.label.update:
+          id: valor_humedad_salon
+          text:
+            format: "%.0f %%"
+            args: [ 'x' ]
+
+  - platform: homeassistant
+    id: iluminacion_salon
+    entity_id: sensor.sensor_iluminacion_iluminancia
+    on_value:
+      - lvgl.label.update:
+          id: valor_iluminacion_salon
+          text:
+            format: "%.0f lx"
+            args: [ 'x' ]
+
+  # ----------------------------------------------------------
+  # Temperatura / humedad general
+  # ----------------------------------------------------------
+
+  - platform: homeassistant
+    id: temperatura_general
+    entity_id: sensor.house_temperature
+    on_value:
+      - lvgl.label.update:
+          id: valor_temperatura_general
+          text:
+            format: "%.1f °C"
+            args: [ 'x' ]
+
+  - platform: homeassistant
+    id: humedad_general
+    entity_id: sensor.house_humidity
+    on_value:
+      - lvgl.label.update:
+          id: valor_humedad_general
+          text:
+            format: "%.0f %%"
+            args: [ 'x' ]
+
+  # ----------------------------------------------------------
+  # Dormitorio
+  # ----------------------------------------------------------
+
+  - platform: homeassistant
+    id: temperatura_dormitorio
+    entity_id: sensor.tze200_cirvgep4_ts0601_temperatura
+    on_value:
+      - lvgl.label.update:
+          id: valor_temperatura_dormitorio
+          text:
+            format: "%.1f °C"
+            args: [ 'x' ]
+
+  - platform: homeassistant
+    id: humedad_dormitorio
+    entity_id: sensor.tze200_cirvgep4_ts0601_humedad
+    on_value:
+      - lvgl.label.update:
+          id: valor_humedad_dormitorio
+          text:
+            format: "%.0f %%"
+            args: [ 'x' ]
+
+  # ----------------------------------------------------------
+  # Aire acondicionado
+  # ----------------------------------------------------------
+
+  - platform: homeassistant
+    id: temperatura_aire
+    entity_id: sensor.sensor_aire_conectado_temperatura
+    on_value:
+      - lvgl.label.update:
+          id: valor_temperatura_aire
+          text:
+            format: "%.1f °C"
+            args: [ 'x' ]
+
+  - platform: homeassistant
+    id: humedad_aire
+    entity_id: sensor.sensor_aire_conectado_humedad
+    on_value:
+      - lvgl.label.update:
+          id: valor_humedad_aire
+          text:
+            format: "%.0f %%"
+            args: [ 'x' ]
+
+  # ----------------------------------------------------------
+  # Sensor de presencia / iluminación
+  # ----------------------------------------------------------
+
+  - platform: homeassistant
+    id: iluminancia_presencia
+    entity_id: sensor.smart_presence_sensor_iluminancia
+    on_value:
+      - lvgl.label.update:
+          id: valor_iluminancia_presencia
+          text:
+            format: "%.0f lx"
+            args: [ 'x' ]
+
+# ============================================================
+# BINARY SENSORS DE HOME ASSISTANT
+# ============================================================
+
+binary_sensor:
+
+  # ==========================================================
+  # MOVIMIENTO
+  # ==========================================================
+
+  - platform: homeassistant
+    id: movimiento_salon
+    entity_id: binary_sensor.e1_zoom_movimiento
+
+    on_state:
+      then:
+        - lvgl.label.update:
+            id: estado_movimiento
+            text: !lambda |-
+              return std::string(x ? "MOVIMIENTO" : "SIN MOVIMIENTO");
+
+  # ==========================================================
+  # PRESENCIA
+  # ==========================================================
+
+  - platform: homeassistant
+    id: presencia_casa
+    entity_id: binary_sensor.sensor_presencia
+
+    on_state:
+      then:
+        - lvgl.label.update:
+            id: estado_presencia
+            text: !lambda |-
+              return std::string(x ? "PRESENCIA" : "SIN PRESENCIA");
+
+  # ==========================================================
+  # VENTANA SALÓN
+  # ==========================================================
+
+  - platform: homeassistant
+    id: ventana_salon
+    entity_id: binary_sensor.ventana_salon
+
+    on_state:
+      then:
+        - lvgl.label.update:
+            id: estado_ventana_salon
+            text: !lambda |-
+              return std::string(x ? "ABIERTA" : "CERRADA");
+
+  # ==========================================================
+  # VENTANA DORMITORIO
+  # ==========================================================
+
+  - platform: homeassistant
+    id: ventana_dormitorio
+    entity_id: binary_sensor.sensor_ventana_dormitorio
+
+    on_state:
+      then:
+        - lvgl.label.update:
+            id: estado_ventana_dormitorio
+            text: !lambda |-
+              return std::string(x ? "ABIERTA" : "CERRADA");
+
+# ============================================================
+# LVGL
 # ============================================================
 
 lvgl:
+
   displays:
     - tft_display
 
@@ -147,6 +340,7 @@ lvgl:
   refresh_interval: 50ms
 
   theme:
+
     button:
       bg_color: 0x202020
       bg_opa: 100%
@@ -154,115 +348,329 @@ lvgl:
       border_color: 0x404040
       radius: 12
       text_color: 0xFFFFFF
+
     label:
       text_color: 0xFFFFFF
 
   pages:
-    - id: main_page
-      layout: 3x4
+
+    # ========================================================
+    # PÁGINA PRINCIPAL
+    # ========================================================
+
+    - id: pagina_principal
+
+      bg_color: 0x101010
+
       widgets:
-        # FILA 0: TÍTULO (ocupa los 3 columnas)
+
+        # ----------------------------------------------------
+        # TÍTULO
+        # ----------------------------------------------------
+
         - label:
             id: titulo
-            grid_cell_row_pos: 0
-            grid_cell_column_pos: 0
-            grid_cell_column_span: 3
+            x: 20
+            y: 12
             text: "CASA"
             text_font: montserrat_24
             text_color: 0xFFFFFF
-            bg_color: black
-            bg_opa: cover
 
-        # FILA 1: SALÓN, DORMITORIO, PRESENCIA
+        # ----------------------------------------------------
+        # TEMPERATURA GENERAL
+        # ----------------------------------------------------
+
         - label:
-            id: salon_titulo
-            grid_cell_row_pos: 1
-            grid_cell_column_pos: 0
+            x: 20
+            y: 55
+            text: "TEMPERATURA"
+            text_font: montserrat_14
+            text_color: 0xAAAAAA
+
+        - label:
+            id: valor_temperatura_general
+            x: 20
+            y: 75
+            text: "--.- °C"
+            text_font: montserrat_24
+            text_color: 0xFF7043
+
+        # ----------------------------------------------------
+        # HUMEDAD GENERAL
+        # ----------------------------------------------------
+
+        - label:
+            x: 180
+            y: 55
+            text: "HUMEDAD"
+            text_font: montserrat_14
+            text_color: 0xAAAAAA
+
+        - label:
+            id: valor_humedad_general
+            x: 180
+            y: 75
+            text: "-- %"
+            text_font: montserrat_24
+            text_color: 0x42A5F5
+
+        # ----------------------------------------------------
+        # ILUMINACIÓN
+        # ----------------------------------------------------
+
+        - label:
+            x: 340
+            y: 55
+            text: "LUZ"
+            text_font: montserrat_14
+            text_color: 0xAAAAAA
+
+        - label:
+            id: valor_iluminacion_salon
+            x: 340
+            y: 75
+            text: "--- lx"
+            text_font: montserrat_24
+            text_color: 0xFFD54F
+
+        # ====================================================
+        # SALÓN
+        # ====================================================
+
+        - label:
+            x: 20
+            y: 125
             text: "SALÓN"
             text_font: montserrat_20
             text_color: 0xFFFFFF
-            bg_color: black
-            bg_opa: cover
+
         - label:
-            id: dormitorio_titulo
-            grid_cell_row_pos: 1
-            grid_cell_column_pos: 1
+            x: 20
+            y: 160
+            text: "Temperatura"
+            text_font: montserrat_14
+            text_color: 0x999999
+
+        - label:
+            id: valor_temperatura_salon
+            x: 20
+            y: 180
+            text: "--.- °C"
+            text_font: montserrat_22
+            text_color: 0xFF7043
+
+        - label:
+            x: 20
+            y: 215
+            text: "Humedad"
+            text_font: montserrat_14
+            text_color: 0x999999
+
+        - label:
+            id: valor_humedad_salon
+            x: 20
+            y: 235
+            text: "-- %"
+            text_font: montserrat_22
+            text_color: 0x42A5F5
+
+        # ====================================================
+        # DORMITORIO
+        # ====================================================
+
+        - label:
+            x: 180
+            y: 125
             text: "DORMITORIO"
             text_font: montserrat_20
             text_color: 0xFFFFFF
-            bg_color: black
-            bg_opa: cover
+
         - label:
-            id: presencia_titulo
-            grid_cell_row_pos: 1
-            grid_cell_column_pos: 2
+            x: 180
+            y: 160
+            text: "Temperatura"
+            text_font: montserrat_14
+            text_color: 0x999999
+
+        - label:
+            id: valor_temperatura_dormitorio
+            x: 180
+            y: 180
+            text: "--.- °C"
+            text_font: montserrat_22
+            text_color: 0xFF7043
+
+        - label:
+            x: 180
+            y: 215
+            text: "Humedad"
+            text_font: montserrat_14
+            text_color: 0x999999
+
+        - label:
+            id: valor_humedad_dormitorio
+            x: 180
+            y: 235
+            text: "-- %"
+            text_font: montserrat_22
+            text_color: 0x42A5F5
+
+        # ====================================================
+        # PRESENCIA
+        # ====================================================
+
+        - label:
+            x: 340
+            y: 125
             text: "PRESENCIA"
             text_font: montserrat_20
             text_color: 0xFFFFFF
-            bg_color: black
-            bg_opa: cover
 
-        # FILA 2: VENTANAS, ILUMINACIÓN, AIRE
         - label:
-            id: ventanas_titulo
-            grid_cell_row_pos: 2
-            grid_cell_column_pos: 0
+            id: estado_presencia
+            x: 340
+            y: 165
+            text: "SIN DATOS"
+            text_font: montserrat_16
+            text_color: 0xAAAAAA
+
+        - label:
+            id: estado_movimiento
+            x: 340
+            y: 195
+            text: "SIN DATOS"
+            text_font: montserrat_16
+            text_color: 0xAAAAAA
+
+        # ====================================================
+        # VENTANAS
+        # ====================================================
+
+        - label:
+            x: 20
+            y: 285
             text: "VENTANAS"
             text_font: montserrat_20
             text_color: 0xFFFFFF
-            bg_color: black
-            bg_opa: cover
+
         - label:
-            id: iluminancia_titulo
-            grid_cell_row_pos: 2
-            grid_cell_column_pos: 1
+            x: 20
+            y: 320
+            text: "Salón:"
+            text_font: montserrat_16
+            text_color: 0xAAAAAA
+
+        - label:
+            id: estado_ventana_salon
+            x: 90
+            y: 320
+            text: "--"
+            text_font: montserrat_16
+            text_color: 0xFFFFFF
+
+        - label:
+            x: 20
+            y: 350
+            text: "Dormitorio:"
+            text_font: montserrat_16
+            text_color: 0xAAAAAA
+
+        - label:
+            id: estado_ventana_dormitorio
+            x: 130
+            y: 350
+            text: "--"
+            text_font: montserrat_16
+            text_color: 0xFFFFFF
+
+        # ====================================================
+        # ILUMINANCIA SENSOR PRESENCIA
+        # ====================================================
+
+        - label:
+            x: 270
+            y: 285
             text: "ILUMINANCIA"
             text_font: montserrat_18
             text_color: 0xFFFFFF
-            bg_color: black
-            bg_opa: cover
+
         - label:
-            id: aire_titulo
-            grid_cell_row_pos: 2
-            grid_cell_column_pos: 2
+            id: valor_iluminancia_presencia
+            x: 270
+            y: 320
+            text: "--- lx"
+            text_font: montserrat_22
+            text_color: 0xFFD54F
+
+        # ====================================================
+        # AIRE
+        # ====================================================
+
+        - label:
+            x: 270
+            y: 355
             text: "AIRE"
             text_font: montserrat_18
             text_color: 0xFFFFFF
-            bg_color: black
-            bg_opa: cover
 
-        # FILA 3: BOTONES DE CONTROL
+        - label:
+            id: valor_temperatura_aire
+            x: 270
+            y: 385
+            text: "--.- °C"
+            text_font: montserrat_18
+            text_color: 0xFF7043
+
+        - label:
+            id: valor_humedad_aire
+            x: 375
+            y: 385
+            text: "-- %"
+            text_font: montserrat_18
+            text_color: 0x42A5F5
+
+        # ====================================================
+        # BOTÓN LUZ SALÓN
+        # ====================================================
+
         - button:
             id: boton_luz_salon
-            grid_cell_row_pos: 3
-            grid_cell_column_pos: 0
-            grid_cell_column_span: 2
-            text: "💡  LUZ SALÓN"
-            text_font: montserrat_16
-            bg_color: $button_off_color
-            bg_opa: 100%
-            border_width: 1
-            border_color: 0x404040
-            radius: 12
-            text_color: 0xFFFFFF
+            x: 20
+            y: 405
+            width: 200
+            height: 60
+
+            widgets:
+
+              - label:
+                  align: CENTER
+                  text: "💡  LUZ SALÓN"
+                  text_font: montserrat_16
+
             on_click:
               - homeassistant.action:
                   action: light.toggle
                   data:
                     entity_id: light.bombilla_salon
 
+        # ====================================================
+        # BOTÓN LUZ HABITACIÓN
+        # ====================================================
+
         - button:
             id: boton_luz_habitacion
-            grid_cell_row_pos: 3
-            grid_cell_column_pos: 2
-            text: "💡  HABITACIÓN"
-            text_font: montserrat_16
-            bg_color: $button_off_color
-            bg_opa: 100%
-            border_width: 1
-            border_color: 0x404040
-            radius: 12
-            text_color: 0xFFFFFF
+            x: 240
+            y: 405
+            width: 220
+            height: 60
+
+            widgets:
+
+              - label:
+                  align: CENTER
+                  text: "💡  HABITACIÓN"
+                  text_font: montserrat_16
+
             on_click:
               - homeassistant.action:
                   action: light.toggle
