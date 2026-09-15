@@ -1133,32 +1133,16 @@ lvgl:
                     entity_id: light.bombilla_habitacion
 
 # ============================================================
-# NAVEGACIÓN POR SWIPE
+# NAVEGACIÓN ENTRE PÁGINAS
 # ============================================================
+# Llamar estos scripts desde automatizaciones, botones o triggers
+# de gestos cuando sea necesario.
 
 script:
-  - id: swipe_left_handler
+  - id: pagina_siguiente
     then:
-      - if:
-          condition:
-            - lambda: 'return id(pagina_principal).is_visible();'
-          then:
-            - lvgl.page.show: pagina_salon
-      - if:
-          condition:
-            - lambda: 'return id(pagina_salon).is_visible();'
-          then:
-            - lvgl.page.show: pagina_dormitorio
+      - lvgl.page.next:
 
-  - id: swipe_right_handler
+  - id: pagina_anterior
     then:
-      - if:
-          condition:
-            - lambda: 'return id(pagina_dormitorio).is_visible();'
-          then:
-            - lvgl.page.show: pagina_salon
-      - if:
-          condition:
-            - lambda: 'return id(pagina_salon).is_visible();'
-          then:
-            - lvgl.page.show: pagina_principal
+      - lvgl.page.prev:
