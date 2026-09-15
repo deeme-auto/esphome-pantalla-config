@@ -1145,4 +1145,4 @@ script:
 
   - id: pagina_anterior
     then:
-      - lvgl.page.prev:
+      - lvgl.page.previous:
