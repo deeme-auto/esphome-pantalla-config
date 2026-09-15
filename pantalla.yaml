@@ -153,31 +153,31 @@ font:
       - "\U000F0349"  # mdi-arrow-left
       - "\U000F034A"  # mdi-arrow-right
 
-  - file: "https://github.com/google/fonts/raw/main/apache/nunito/Nunito-SemiBold.ttf"
+  - file: "https://github.com/google/fonts/raw/main/apache/nunito/static/Nunito-SemiBold.ttf"
     id: nunito_24
     size: 24
     bpp: 8
     glyphs: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.-%°C%%"
 
-  - file: "https://github.com/google/fonts/raw/main/apache/nunito/Nunito-SemiBold.ttf"
+  - file: "https://github.com/google/fonts/raw/main/apache/nunito/static/Nunito-SemiBold.ttf"
     id: nunito_20
     size: 20
     bpp: 8
     glyphs: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.-%°C%%"
 
-  - file: "https://github.com/google/fonts/raw/main/apache/nunito/Nunito-SemiBold.ttf"
+  - file: "https://github.com/google/fonts/raw/main/apache/nunito/static/Nunito-SemiBold.ttf"
     id: nunito_18
     size: 18
     bpp: 8
     glyphs: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.-%°C%%"
 
-  - file: "https://github.com/google/fonts/raw/main/apache/nunito/Nunito-SemiBold.ttf"
+  - file: "https://github.com/google/fonts/raw/main/apache/nunito/static/Nunito-SemiBold.ttf"
     id: nunito_16
     size: 16
     bpp: 8
     glyphs: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.-%°C%%"
 
-  - file: "https://github.com/google/fonts/raw/main/apache/nunito/Nunito-SemiBold.ttf"
+  - file: "https://github.com/google/fonts/raw/main/apache/nunito/static/Nunito-SemiBold.ttf"
     id: nunito_14
     size: 14
     bpp: 8
