@@ -83,7 +83,7 @@ display:
     id: tft_display
 
     auto_clear_enabled: false
-    color_order: RGB
+    color_order: BGR
 
     cs_pin: 39
 
