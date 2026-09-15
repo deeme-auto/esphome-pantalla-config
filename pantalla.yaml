@@ -135,23 +135,41 @@ touchscreen:
 
 color:
   - id: primary_color
-    hex: "4285F4"
+    hex: "7A8FA6"
   - id: secondary_color
-    hex: "34A853"
+    hex: "8FA68F"
   - id: accent_color
-    hex: "FBBC05"
+    hex: "C2B49A"
   - id: error_color
-    hex: "EA4335"
+    hex: "B07A70"
   - id: bg_dark
-    hex: "121212"
+    hex: "1C1B19"
   - id: bg_card
-    hex: "1E1E1E"
+    hex: "2B2927"
   - id: text_primary
-    hex: "FFFFFF"
+    hex: "D9D5CF"
   - id: text_secondary
-    hex: "B0B0B0"
+    hex: "8F8A82"
   - id: text_accent
-    hex: "42A5F5"
+    hex: "A9B8C7"
+
+# ============================================================
+# FUENTES (gfonts: proveedor nativo de ESPHome)
+# ============================================================
+
+font:
+  - file: "gfonts://Roboto"
+    id: font_small
+    size: 16
+  - file: "gfonts://Roboto"
+    id: font_medium
+    size: 20
+  - file: "gfonts://Roboto"
+    id: font_large
+    size: 26
+  - file: "gfonts://Roboto"
+    id: font_title
+    size: 32
 
 # ============================================================
 # SENSORES DE HOME ASSISTANT
@@ -183,30 +201,30 @@ sensor:
           then:
             - lvgl.label.update:
                 id: main_valor_temperatura_salon
-                text_color: 0xFF5722
+                text_color: 0xE0998C
             - lvgl.label.update:
                 id: detail_valor_temperatura_salon
-                text_color: 0xFF5722
+                text_color: 0xE0998C
       - if:
           condition:
             - lambda: 'return x <= 25 && x >= 20;'
           then:
             - lvgl.label.update:
                 id: main_valor_temperatura_salon
-                text_color: 0x4CAF50
+                text_color: 0x9FC49F
             - lvgl.label.update:
                 id: detail_valor_temperatura_salon
-                text_color: 0x4CAF50
+                text_color: 0x9FC49F
       - if:
           condition:
             - lambda: 'return x < 20;'
           then:
             - lvgl.label.update:
                 id: main_valor_temperatura_salon
-                text_color: 0x2196F3
+                text_color: 0x9BB8CE
             - lvgl.label.update:
                 id: detail_valor_temperatura_salon
-                text_color: 0x2196F3
+                text_color: 0x9BB8CE
 
   - platform: homeassistant
     id: humedad_salon
@@ -228,10 +246,10 @@ sensor:
           then:
             - lvgl.label.update:
                 id: main_valor_humedad_salon
-                text_color: 0x03A9F4
+                text_color: 0x8FB6C9
             - lvgl.label.update:
                 id: detail_valor_humedad_salon
-                text_color: 0x03A9F4
+                text_color: 0x8FB6C9
 
   - platform: homeassistant
     id: iluminacion_salon
@@ -262,21 +280,21 @@ sensor:
           then:
             - lvgl.label.update:
                 id: main_valor_temperatura_general
-                text_color: 0xFF5722
+                text_color: 0xE0998C
       - if:
           condition:
             - lambda: 'return x <= 25 && x >= 20;'
           then:
             - lvgl.label.update:
                 id: main_valor_temperatura_general
-                text_color: 0x4CAF50
+                text_color: 0x9FC49F
       - if:
           condition:
             - lambda: 'return x < 20;'
           then:
             - lvgl.label.update:
                 id: main_valor_temperatura_general
-                text_color: 0x2196F3
+                text_color: 0x9BB8CE
 
   - platform: homeassistant
     id: humedad_general
@@ -312,30 +330,30 @@ sensor:
           then:
             - lvgl.label.update:
                 id: main_valor_temperatura_dormitorio
-                text_color: 0xFF5722
+                text_color: 0xE0998C
             - lvgl.label.update:
                 id: detail_valor_temperatura_dormitorio
-                text_color: 0xFF5722
+                text_color: 0xE0998C
       - if:
           condition:
             - lambda: 'return x <= 25 && x >= 20;'
           then:
             - lvgl.label.update:
                 id: main_valor_temperatura_dormitorio
-                text_color: 0x4CAF50
+                text_color: 0x9FC49F
             - lvgl.label.update:
                 id: detail_valor_temperatura_dormitorio
-                text_color: 0x4CAF50
+                text_color: 0x9FC49F
       - if:
           condition:
             - lambda: 'return x < 20;'
           then:
             - lvgl.label.update:
                 id: main_valor_temperatura_dormitorio
-                text_color: 0x2196F3
+                text_color: 0x9BB8CE
             - lvgl.label.update:
                 id: detail_valor_temperatura_dormitorio
-                text_color: 0x2196F3
+                text_color: 0x9BB8CE
 
   - platform: homeassistant
     id: humedad_dormitorio
@@ -416,14 +434,14 @@ binary_sensor:
             then:
               - lvgl.label.update:
                   id: main_estado_movimiento
-                  text_color: 0x4CAF50
+                  text_color: 0x9FC49F
         - if:
             condition:
               - lambda: 'return !x;'
             then:
               - lvgl.label.update:
                   id: main_estado_movimiento
-                  text_color: 0x757575
+                  text_color: 0x6E6B66
 
   # ----------------------------------------------------------
   # PRESENCIA
@@ -445,14 +463,14 @@ binary_sensor:
             then:
               - lvgl.label.update:
                   id: main_estado_presencia
-                  text_color: 0x4CAF50
+                  text_color: 0x9FC49F
         - if:
             condition:
               - lambda: 'return !x;'
             then:
               - lvgl.label.update:
                   id: main_estado_presencia
-                  text_color: 0x757575
+                  text_color: 0x6E6B66
 
   # ----------------------------------------------------------
   # VENTANA SALÓN
@@ -474,14 +492,14 @@ binary_sensor:
             then:
               - lvgl.label.update:
                   id: main_estado_ventana_salon
-                  text_color: 0xFF9800
+                  text_color: 0xD9B48F
         - if:
             condition:
               - lambda: 'return !x;'
             then:
               - lvgl.label.update:
                   id: main_estado_ventana_salon
-                  text_color: 0x4CAF50
+                  text_color: 0x9FC49F
 
   # ----------------------------------------------------------
   # VENTANA DORMITORIO
@@ -503,14 +521,14 @@ binary_sensor:
             then:
               - lvgl.label.update:
                   id: main_estado_ventana_dormitorio
-                  text_color: 0xFF9800
+                  text_color: 0xD9B48F
         - if:
             condition:
               - lambda: 'return !x;'
             then:
               - lvgl.label.update:
                   id: main_estado_ventana_dormitorio
-                  text_color: 0x4CAF50
+                  text_color: 0x9FC49F
 
 # ============================================================
 # LVGL
@@ -537,9 +555,11 @@ lvgl:
       border_width: 0
       radius: 15
       text_color: text_primary
+      text_font: font_medium
 
     label:
       text_color: text_primary
+      text_font: font_small
 
   pages:
 
@@ -568,12 +588,14 @@ lvgl:
             widgets:
               - label:
                   id: hora_actual
+                  text_font: font_medium
                   x: 20
                   y: 15
                   text: "00:00"
                   text_color: text_primary
               - label:
                   id: fecha_actual
+                  text_font: font_medium
                   x: 300
                   y: 15
                   text: "--/--/----"
@@ -601,6 +623,7 @@ lvgl:
                   text_color: text_secondary
               - label:
                   id: main_valor_temperatura_general
+                  text_font: font_large
                   x: 10
                   y: 30
                   text: "--.- °C"
@@ -624,6 +647,7 @@ lvgl:
                   text_color: text_secondary
               - label:
                   id: main_valor_humedad_general
+                  text_font: font_large
                   x: 10
                   y: 30
                   text: "-- %"
@@ -647,6 +671,7 @@ lvgl:
                   text_color: text_secondary
               - label:
                   id: main_valor_iluminacion_salon
+                  text_font: font_large
                   x: 10
                   y: 30
                   text: "--- lx"
@@ -679,6 +704,7 @@ lvgl:
                   text_color: text_secondary
               - label:
                   id: main_valor_temperatura_salon
+                  text_font: font_large
                   x: 10
                   y: 55
                   text: "--.- °C"
@@ -690,6 +716,7 @@ lvgl:
                   text_color: text_secondary
               - label:
                   id: main_valor_humedad_salon
+                  text_font: font_large
                   x: 120
                   y: 55
                   text: "-- %"
@@ -718,6 +745,7 @@ lvgl:
                   text_color: text_secondary
               - label:
                   id: main_valor_temperatura_dormitorio
+                  text_font: font_large
                   x: 10
                   y: 55
                   text: "--.- °C"
@@ -729,6 +757,7 @@ lvgl:
                   text_color: text_secondary
               - label:
                   id: main_valor_humedad_dormitorio
+                  text_font: font_large
                   x: 120
                   y: 55
                   text: "-- %"
@@ -756,12 +785,14 @@ lvgl:
                   text_color: text_secondary
               - label:
                   id: main_estado_presencia
+                  text_font: font_medium
                   x: 10
                   y: 30
                   text: "SIN DATOS"
                   text_color: text_secondary
               - label:
                   id: main_estado_movimiento
+                  text_font: font_medium
                   x: 10
                   y: 52
                   text: "SIN DATOS"
@@ -790,6 +821,7 @@ lvgl:
                   text_color: text_secondary
               - label:
                   id: main_estado_ventana_salon
+                  text_font: font_medium
                   x: 60
                   y: 25
                   text: "--"
@@ -801,6 +833,7 @@ lvgl:
                   text_color: text_secondary
               - label:
                   id: main_estado_ventana_dormitorio
+                  text_font: font_medium
                   x: 60
                   y: 45
                   text: "--"
@@ -824,12 +857,14 @@ lvgl:
                   text_color: text_secondary
               - label:
                   id: main_valor_temperatura_aire
+                  text_font: font_large
                   x: 10
                   y: 25
                   text: "--.- °C"
                   text_color: text_primary
               - label:
                   id: main_valor_humedad_aire
+                  text_font: font_large
                   x: 10
                   y: 45
                   text: "-- %"
@@ -956,6 +991,7 @@ lvgl:
                   text_color: text_secondary
               - label:
                   id: detail_valor_temperatura_salon
+                  text_font: font_large
                   x: 20
                   y: 60
                   text: "--.- °C"
@@ -979,6 +1015,7 @@ lvgl:
                   text_color: text_secondary
               - label:
                   id: detail_valor_humedad_salon
+                  text_font: font_large
                   x: 10
                   y: 45
                   text: "-- %"
@@ -1002,6 +1039,7 @@ lvgl:
                   text_color: text_secondary
               - label:
                   id: detail_valor_iluminacion_salon
+                  text_font: font_large
                   x: 10
                   y: 45
                   text: "--- lx"
@@ -1081,6 +1119,7 @@ lvgl:
                   text_color: text_secondary
               - label:
                   id: detail_valor_temperatura_dormitorio
+                  text_font: font_large
                   x: 20
                   y: 60
                   text: "--.- °C"
@@ -1104,6 +1143,7 @@ lvgl:
                   text_color: text_secondary
               - label:
                   id: detail_valor_humedad_dormitorio
+                  text_font: font_large
                   x: 10
                   y: 45
                   text: "-- %"
