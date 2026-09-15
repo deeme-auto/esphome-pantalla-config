@@ -130,6 +130,85 @@ touchscreen:
     display: tft_display
 
 # ============================================================
+# FUENTES
+# ============================================================
+
+font:
+  - file: "https://github.com/Templarian/MaterialDesign-Webfont/raw/v7.4.47/fonts/materialdesignicons-webfont.ttf"
+    id: mdi_icons_40
+    size: 40
+    bpp: 8
+    glyphs:
+      - "$mdi_lightbulb"
+      - "$mdi_lightbulb_on"
+      - "$mdi_thermostat"
+      - "$mdi_water_percent"
+      - "$mdi_window_open"
+      - "$mdi_window_closed"
+      - "$mdi_motion_sensor"
+      - "$mdi_home"
+      - "$mdi_weather_sunny"
+      - "$mdi_weather_night"
+      - "$mdi_air_conditioner"
+      - "$mdi_fan"
+      - "$mdi_arrow_left"
+      - "$mdi_arrow_right"
+
+  - file: "https://github.com/google/fonts/raw/main/apache/nunito/Nunito-SemiBold.ttf"
+    id: nunito_24
+    size: 24
+    bpp: 8
+    glyphs: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.-%°C%%"
+
+  - file: "https://github.com/google/fonts/raw/main/apache/nunito/Nunito-SemiBold.ttf"
+    id: nunito_20
+    size: 20
+    bpp: 8
+    glyphs: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.-%°C%%"
+
+  - file: "https://github.com/google/fonts/raw/main/apache/nunito/Nunito-SemiBold.ttf"
+    id: nunito_18
+    size: 18
+    bpp: 8
+    glyphs: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.-%°C%%"
+
+  - file: "https://github.com/google/fonts/raw/main/apache/nunito/Nunito-SemiBold.ttf"
+    id: nunito_16
+    size: 16
+    bpp: 8
+    glyphs: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.-%°C%%"
+
+  - file: "https://github.com/google/fonts/raw/main/apache/nunito/Nunito-SemiBold.ttf"
+    id: nunito_14
+    size: 14
+    bpp: 8
+    glyphs: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.-%°C%%"
+
+# ============================================================
+# COLORES PERSONALIZADOS
+# ============================================================
+
+color:
+  - id: primary_color
+    hex: "4285F4"
+  - id: secondary_color
+    hex: "34A853"
+  - id: accent_color
+    hex: "FBBC05"
+  - id: error_color
+    hex: "EA4335"
+  - id: bg_dark
+    hex: "121212"
+  - id: bg_card
+    hex: "1E1E1E"
+  - id: text_primary
+    hex: "FFFFFF"
+  - id: text_secondary
+    hex: "B0B0B0"
+  - id: text_accent
+    hex: "42A5F5"
+
+# ============================================================
 # SENSORES DE HOME ASSISTANT
 # ============================================================
 
@@ -148,6 +227,27 @@ sensor:
           text:
             format: "%.1f °C"
             args: [ 'x' ]
+      - if:
+          condition:
+            - lambda: 'return x > 25;'
+          then:
+            - lvgl.label.update:
+                id: valor_temperatura_salon
+                text_color: 0xFF5722
+      - if:
+          condition:
+            - lambda: 'return x <= 25 && x >= 20;'
+          then:
+            - lvgl.label.update:
+                id: valor_temperatura_salon
+                text_color: 0x4CAF50
+      - if:
+          condition:
+            - lambda: 'return x < 20;'
+          then:
+            - lvgl.label.update:
+                id: valor_temperatura_salon
+                text_color: 0x2196F3
 
   - platform: homeassistant
     id: humedad_salon
@@ -158,6 +258,13 @@ sensor:
           text:
             format: "%.0f %%"
             args: [ 'x' ]
+      - if:
+          condition:
+            - lambda: 'return x > 60;'
+          then:
+            - lvgl.label.update:
+                id: valor_humedad_salon
+                text_color: 0x03A9F4
 
   - platform: homeassistant
     id: iluminacion_salon
@@ -182,6 +289,27 @@ sensor:
           text:
             format: "%.1f °C"
             args: [ 'x' ]
+      - if:
+          condition:
+            - lambda: 'return x > 25;'
+          then:
+            - lvgl.label.update:
+                id: valor_temperatura_general
+                text_color: 0xFF5722
+      - if:
+          condition:
+            - lambda: 'return x <= 25 && x >= 20;'
+          then:
+            - lvgl.label.update:
+                id: valor_temperatura_general
+                text_color: 0x4CAF50
+      - if:
+          condition:
+            - lambda: 'return x < 20;'
+          then:
+            - lvgl.label.update:
+                id: valor_temperatura_general
+                text_color: 0x2196F3
 
   - platform: homeassistant
     id: humedad_general
@@ -206,6 +334,27 @@ sensor:
           text:
             format: "%.1f °C"
             args: [ 'x' ]
+      - if:
+          condition:
+            - lambda: 'return x > 25;'
+          then:
+            - lvgl.label.update:
+                id: valor_temperatura_dormitorio
+                text_color: 0xFF5722
+      - if:
+          condition:
+            - lambda: 'return x <= 25 && x >= 20;'
+          then:
+            - lvgl.label.update:
+                id: valor_temperatura_dormitorio
+                text_color: 0x4CAF50
+      - if:
+          condition:
+            - lambda: 'return x < 20;'
+          then:
+            - lvgl.label.update:
+                id: valor_temperatura_dormitorio
+                text_color: 0x2196F3
 
   - platform: homeassistant
     id: humedad_dormitorio
@@ -261,9 +410,9 @@ sensor:
 
 binary_sensor:
 
-  # ==========================================================
+  # ----------------------------------------------------------
   # MOVIMIENTO
-  # ==========================================================
+  # ----------------------------------------------------------
 
   - platform: homeassistant
     id: movimiento_salon
@@ -275,10 +424,24 @@ binary_sensor:
             id: estado_movimiento
             text: !lambda |-
               return std::string(x ? "MOVIMIENTO" : "SIN MOVIMIENTO");
+        - if:
+            condition:
+              - lambda: 'return x;'
+            then:
+              - lvgl.label.update:
+                  id: estado_movimiento
+                  text_color: 0x4CAF50
+        - if:
+            condition:
+              - lambda: 'return !x;'
+            then:
+              - lvgl.label.update:
+                  id: estado_movimiento
+                  text_color: 0x757575
 
-  # ==========================================================
+  # ----------------------------------------------------------
   # PRESENCIA
-  # ==========================================================
+  # ----------------------------------------------------------
 
   - platform: homeassistant
     id: presencia_casa
@@ -290,10 +453,24 @@ binary_sensor:
             id: estado_presencia
             text: !lambda |-
               return std::string(x ? "PRESENCIA" : "SIN PRESENCIA");
+        - if:
+            condition:
+              - lambda: 'return x;'
+            then:
+              - lvgl.label.update:
+                  id: estado_presencia
+                  text_color: 0x4CAF50
+        - if:
+            condition:
+              - lambda: 'return !x;'
+            then:
+              - lvgl.label.update:
+                  id: estado_presencia
+                  text_color: 0x757575
 
-  # ==========================================================
+  # ----------------------------------------------------------
   # VENTANA SALÓN
-  # ==========================================================
+  # ----------------------------------------------------------
 
   - platform: homeassistant
     id: ventana_salon
@@ -305,10 +482,24 @@ binary_sensor:
             id: estado_ventana_salon
             text: !lambda |-
               return std::string(x ? "ABIERTA" : "CERRADA");
+        - if:
+            condition:
+              - lambda: 'return x;'
+            then:
+              - lvgl.label.update:
+                  id: estado_ventana_salon
+                  text_color: 0xFF9800
+        - if:
+            condition:
+              - lambda: 'return !x;'
+            then:
+              - lvgl.label.update:
+                  id: estado_ventana_salon
+                  text_color: 0x4CAF50
 
-  # ==========================================================
+  # ----------------------------------------------------------
   # VENTANA DORMITORIO
-  # ==========================================================
+  # ----------------------------------------------------------
 
   - platform: homeassistant
     id: ventana_dormitorio
@@ -320,6 +511,20 @@ binary_sensor:
             id: estado_ventana_dormitorio
             text: !lambda |-
               return std::string(x ? "ABIERTA" : "CERRADA");
+        - if:
+            condition:
+              - lambda: 'return x;'
+            then:
+              - lvgl.label.update:
+                  id: estado_ventana_dormitorio
+                  text_color: 0xFF9800
+        - if:
+            condition:
+              - lambda: 'return !x;'
+            then:
+              - lvgl.label.update:
+                  id: estado_ventana_dormitorio
+                  text_color: 0x4CAF50
 
 # ============================================================
 # LVGL
@@ -340,17 +545,17 @@ lvgl:
   refresh_interval: 50ms
 
   theme:
-
     button:
-      bg_color: 0x202020
+      bg_color: bg_card
       bg_opa: 100%
-      border_width: 1
-      border_color: 0x404040
-      radius: 12
-      text_color: 0xFFFFFF
+      border_width: 0
+      radius: 15
+      text_color: text_primary
+      press_bg_color: primary_color
+      press_bg_opa: 100%
 
     label:
-      text_color: 0xFFFFFF
+      text_color: text_primary
 
   pages:
 
@@ -359,320 +564,753 @@ lvgl:
     # ========================================================
 
     - id: pagina_principal
-
-      bg_color: 0x101010
-
+      bg_color: bg_dark
       widgets:
 
         # ----------------------------------------------------
-        # TÍTULO
+        # BARRA SUPERIOR - Hora y fecha
         # ----------------------------------------------------
 
-        - label:
-            id: titulo
-            x: 20
-            y: 12
-            text: "CASA"
-            text_font: montserrat_24
-            text_color: 0xFFFFFF
+        - container:
+            id: barra_superior
+            x: 0
+            y: 0
+            width: 480
+            height: 50
+            bg_color: bg_card
+            bg_opa: 100%
+            radius: 0
+            pad_all: 0
+            widgets:
+              - label:
+                  id: hora_actual
+                  x: 20
+                  y: 15
+                  text: "00:00"
+                  text_font: nunito_20
+                  text_color: text_primary
+              - label:
+                  id: fecha_actual
+                  x: 300
+                  y: 15
+                  text: "--/--/----"
+                  text_font: nunito_16
+                  text_color: text_secondary
 
         # ----------------------------------------------------
-        # TEMPERATURA GENERAL
+        # FILA 1: Tarjetas principales
         # ----------------------------------------------------
 
-        - label:
-            x: 20
-            y: 55
-            text: "TEMPERATURA"
-            text_font: montserrat_14
-            text_color: 0xAAAAAA
+        # Tarjeta Temperatura General
+        - container:
+            x: 10
+            y: 60
+            width: 150
+            height: 100
+            bg_color: bg_card
+            bg_opa: 100%
+            radius: 15
+            pad_all: 10
+            widgets:
+              - label:
+                  x: 10
+                  y: 5
+                  text: "$mdi_thermostat"
+                  text_font: mdi_icons_40
+                  text_color: accent_color
+              - label:
+                  x: 60
+                  y: 5
+                  text: "TEMP"
+                  text_font: nunito_14
+                  text_color: text_secondary
+              - label:
+                  id: valor_temperatura_general
+                  x: 60
+                  y: 30
+                  text: "--.- °C"
+                  text_font: nunito_24
+                  text_color: text_primary
 
-        - label:
-            id: valor_temperatura_general
-            x: 20
-            y: 75
-            text: "--.- °C"
-            text_font: montserrat_24
-            text_color: 0xFF7043
+        # Tarjeta Humedad General
+        - container:
+            x: 170
+            y: 60
+            width: 150
+            height: 100
+            bg_color: bg_card
+            bg_opa: 100%
+            radius: 15
+            pad_all: 10
+            widgets:
+              - label:
+                  x: 10
+                  y: 5
+                  text: "$mdi_water_percent"
+                  text_font: mdi_icons_40
+                  text_color: primary_color
+              - label:
+                  x: 60
+                  y: 5
+                  text: "HUMEDAD"
+                  text_font: nunito_14
+                  text_color: text_secondary
+              - label:
+                  id: valor_humedad_general
+                  x: 60
+                  y: 30
+                  text: "-- %"
+                  text_font: nunito_24
+                  text_color: text_primary
+
+        # Tarjeta Iluminación
+        - container:
+            x: 330
+            y: 60
+            width: 150
+            height: 100
+            bg_color: bg_card
+            bg_opa: 100%
+            radius: 15
+            pad_all: 10
+            widgets:
+              - label:
+                  x: 10
+                  y: 5
+                  text: "$mdi_weather_sunny"
+                  text_font: mdi_icons_40
+                  text_color: accent_color
+              - label:
+                  x: 60
+                  y: 5
+                  text: "LUZ"
+                  text_font: nunito_14
+                  text_color: text_secondary
+              - label:
+                  id: valor_iluminacion_salon
+                  x: 60
+                  y: 30
+                  text: "--- lx"
+                  text_font: nunito_24
+                  text_color: text_primary
 
         # ----------------------------------------------------
-        # HUMEDAD GENERAL
+        # FILA 2: Salón y Dormitorio
         # ----------------------------------------------------
 
-        - label:
-            x: 180
-            y: 55
-            text: "HUMEDAD"
-            text_font: montserrat_14
-            text_color: 0xAAAAAA
+        # Tarjeta Salón
+        - container:
+            x: 10
+            y: 170
+            width: 230
+            height: 120
+            bg_color: bg_card
+            bg_opa: 100%
+            radius: 15
+            pad_all: 10
+            widgets:
+              - label:
+                  x: 10
+                  y: 5
+                  text: "$mdi_home"
+                  text_font: mdi_icons_40
+                  text_color: primary_color
+              - label:
+                  x: 60
+                  y: 5
+                  text: "SALÓN"
+                  text_font: nunito_20
+                  text_color: text_primary
+              - label:
+                  x: 60
+                  y: 35
+                  text: "Temperatura"
+                  text_font: nunito_14
+                  text_color: text_secondary
+              - label:
+                  id: valor_temperatura_salon
+                  x: 60
+                  y: 55
+                  text: "--.- °C"
+                  text_font: nunito_20
+                  text_color: text_primary
+              - label:
+                  x: 160
+                  y: 35
+                  text: "Humedad"
+                  text_font: nunito_14
+                  text_color: text_secondary
+              - label:
+                  id: valor_humedad_salon
+                  x: 160
+                  y: 55
+                  text: "-- %"
+                  text_font: nunito_20
+                  text_color: text_primary
 
-        - label:
-            id: valor_humedad_general
-            x: 180
-            y: 75
-            text: "-- %"
-            text_font: montserrat_24
-            text_color: 0x42A5F5
+        # Tarjeta Dormitorio
+        - container:
+            x: 250
+            y: 170
+            width: 230
+            height: 120
+            bg_color: bg_card
+            bg_opa: 100%
+            radius: 15
+            pad_all: 10
+            widgets:
+              - label:
+                  x: 10
+                  y: 5
+                  text: "$mdi_weather_night"
+                  text_font: mdi_icons_40
+                  text_color: primary_color
+              - label:
+                  x: 60
+                  y: 5
+                  text: "DORMITORIO"
+                  text_font: nunito_20
+                  text_color: text_primary
+              - label:
+                  x: 60
+                  y: 35
+                  text: "Temperatura"
+                  text_font: nunito_14
+                  text_color: text_secondary
+              - label:
+                  id: valor_temperatura_dormitorio
+                  x: 60
+                  y: 55
+                  text: "--.- °C"
+                  text_font: nunito_20
+                  text_color: text_primary
+              - label:
+                  x: 160
+                  y: 35
+                  text: "Humedad"
+                  text_font: nunito_14
+                  text_color: text_secondary
+              - label:
+                  id: valor_humedad_dormitorio
+                  x: 160
+                  y: 55
+                  text: "-- %"
+                  text_font: nunito_20
+                  text_color: text_primary
 
         # ----------------------------------------------------
-        # ILUMINACIÓN
+        # FILA 3: Presencia, Ventanas, Aire
         # ----------------------------------------------------
 
-        - label:
-            x: 340
-            y: 55
-            text: "LUZ"
-            text_font: montserrat_14
-            text_color: 0xAAAAAA
+        # Tarjeta Presencia
+        - container:
+            x: 10
+            y: 300
+            width: 150
+            height: 80
+            bg_color: bg_card
+            bg_opa: 100%
+            radius: 15
+            pad_all: 10
+            widgets:
+              - label:
+                  x: 10
+                  y: 5
+                  text: "$mdi_motion_sensor"
+                  text_font: mdi_icons_40
+                  text_color: accent_color
+              - label:
+                  id: estado_presencia
+                  x: 60
+                  y: 20
+                  text: "SIN DATOS"
+                  text_font: nunito_18
+                  text_color: text_secondary
 
-        - label:
-            id: valor_iluminacion_salon
-            x: 340
-            y: 75
-            text: "--- lx"
-            text_font: montserrat_24
-            text_color: 0xFFD54F
+        # Tarjeta Ventanas
+        - container:
+            x: 170
+            y: 300
+            width: 150
+            height: 80
+            bg_color: bg_card
+            bg_opa: 100%
+            radius: 15
+            pad_all: 10
+            widgets:
+              - label:
+                  x: 10
+                  y: 5
+                  text: "$mdi_window_open"
+                  text_font: mdi_icons_40
+                  text_color: primary_color
+              - label:
+                  x: 60
+                  y: 5
+                  text: "Salón:"
+                  text_font: nunito_14
+                  text_color: text_secondary
+              - label:
+                  id: estado_ventana_salon
+                  x: 60
+                  y: 25
+                  text: "--"
+                  text_font: nunito_16
+                  text_color: text_primary
+              - label:
+                  x: 60
+                  y: 45
+                  text: "Dorm:"
+                  text_font: nunito_14
+                  text_color: text_secondary
+              - label:
+                  id: estado_ventana_dormitorio
+                  x: 100
+                  y: 45
+                  text: "--"
+                  text_font: nunito_16
+                  text_color: text_primary
 
-        # ====================================================
-        # SALÓN
-        # ====================================================
+        # Tarjeta Aire
+        - container:
+            x: 330
+            y: 300
+            width: 150
+            height: 80
+            bg_color: bg_card
+            bg_opa: 100%
+            radius: 15
+            pad_all: 10
+            widgets:
+              - label:
+                  x: 10
+                  y: 5
+                  text: "$mdi_air_conditioner"
+                  text_font: mdi_icons_40
+                  text_color: accent_color
+              - label:
+                  id: valor_temperatura_aire
+                  x: 60
+                  y: 20
+                  text: "--.- °C"
+                  text_font: nunito_18
+                  text_color: text_primary
+              - label:
+                  id: valor_humedad_aire
+                  x: 60
+                  y: 40
+                  text: "-- %"
+                  text_font: nunito_16
+                  text_color: text_secondary
 
-        - label:
-            x: 20
-            y: 125
-            text: "SALÓN"
-            text_font: montserrat_20
-            text_color: 0xFFFFFF
-
-        - label:
-            x: 20
-            y: 160
-            text: "Temperatura"
-            text_font: montserrat_14
-            text_color: 0x999999
-
-        - label:
-            id: valor_temperatura_salon
-            x: 20
-            y: 180
-            text: "--.- °C"
-            text_font: montserrat_22
-            text_color: 0xFF7043
-
-        - label:
-            x: 20
-            y: 215
-            text: "Humedad"
-            text_font: montserrat_14
-            text_color: 0x999999
-
-        - label:
-            id: valor_humedad_salon
-            x: 20
-            y: 235
-            text: "-- %"
-            text_font: montserrat_22
-            text_color: 0x42A5F5
-
-        # ====================================================
-        # DORMITORIO
-        # ====================================================
-
-        - label:
-            x: 180
-            y: 125
-            text: "DORMITORIO"
-            text_font: montserrat_20
-            text_color: 0xFFFFFF
-
-        - label:
-            x: 180
-            y: 160
-            text: "Temperatura"
-            text_font: montserrat_14
-            text_color: 0x999999
-
-        - label:
-            id: valor_temperatura_dormitorio
-            x: 180
-            y: 180
-            text: "--.- °C"
-            text_font: montserrat_22
-            text_color: 0xFF7043
-
-        - label:
-            x: 180
-            y: 215
-            text: "Humedad"
-            text_font: montserrat_14
-            text_color: 0x999999
-
-        - label:
-            id: valor_humedad_dormitorio
-            x: 180
-            y: 235
-            text: "-- %"
-            text_font: montserrat_22
-            text_color: 0x42A5F5
-
-        # ====================================================
-        # PRESENCIA
-        # ====================================================
-
-        - label:
-            x: 340
-            y: 125
-            text: "PRESENCIA"
-            text_font: montserrat_20
-            text_color: 0xFFFFFF
-
-        - label:
-            id: estado_presencia
-            x: 340
-            y: 165
-            text: "SIN DATOS"
-            text_font: montserrat_16
-            text_color: 0xAAAAAA
-
-        - label:
-            id: estado_movimiento
-            x: 340
-            y: 195
-            text: "SIN DATOS"
-            text_font: montserrat_16
-            text_color: 0xAAAAAA
-
-        # ====================================================
-        # VENTANAS
-        # ====================================================
-
-        - label:
-            x: 20
-            y: 285
-            text: "VENTANAS"
-            text_font: montserrat_20
-            text_color: 0xFFFFFF
-
-        - label:
-            x: 20
-            y: 320
-            text: "Salón:"
-            text_font: montserrat_16
-            text_color: 0xAAAAAA
-
-        - label:
-            id: estado_ventana_salon
-            x: 90
-            y: 320
-            text: "--"
-            text_font: montserrat_16
-            text_color: 0xFFFFFF
-
-        - label:
-            x: 20
-            y: 350
-            text: "Dormitorio:"
-            text_font: montserrat_16
-            text_color: 0xAAAAAA
-
-        - label:
-            id: estado_ventana_dormitorio
-            x: 130
-            y: 350
-            text: "--"
-            text_font: montserrat_16
-            text_color: 0xFFFFFF
-
-        # ====================================================
-        # ILUMINANCIA SENSOR PRESENCIA
-        # ====================================================
-
-        - label:
-            x: 270
-            y: 285
-            text: "ILUMINANCIA"
-            text_font: montserrat_18
-            text_color: 0xFFFFFF
-
-        - label:
-            id: valor_iluminancia_presencia
-            x: 270
-            y: 320
-            text: "--- lx"
-            text_font: montserrat_22
-            text_color: 0xFFD54F
-
-        # ====================================================
-        # AIRE
-        # ====================================================
-
-        - label:
-            x: 270
-            y: 355
-            text: "AIRE"
-            text_font: montserrat_18
-            text_color: 0xFFFFFF
-
-        - label:
-            id: valor_temperatura_aire
-            x: 270
-            y: 385
-            text: "--.- °C"
-            text_font: montserrat_18
-            text_color: 0xFF7043
-
-        - label:
-            id: valor_humedad_aire
-            x: 375
-            y: 385
-            text: "-- %"
-            text_font: montserrat_18
-            text_color: 0x42A5F5
-
-        # ====================================================
-        # BOTÓN LUZ SALÓN
-        # ====================================================
+        # ----------------------------------------------------
+        # FILA 4: Botones de control
+        # ----------------------------------------------------
 
         - button:
             id: boton_luz_salon
-            x: 20
-            y: 405
-            width: 200
-            height: 60
-
+            x: 10
+            y: 390
+            width: 150
+            height: 80
+            bg_color: bg_card
+            bg_opa: 100%
+            radius: 15
             widgets:
-
               - label:
+                  x: 0
+                  y: 0
                   align: CENTER
-                  text: "💡  LUZ SALÓN"
-                  text_font: montserrat_16
-
+                  text: "$mdi_lightbulb"
+                  text_font: mdi_icons_40
+                  text_color: accent_color
+              - label:
+                  x: 0
+                  y: 45
+                  align: CENTER
+                  text: "LUZ SALÓN"
+                  text_font: nunito_16
+                  text_color: text_primary
             on_click:
               - homeassistant.action:
                   action: light.toggle
                   data:
                     entity_id: light.bombilla_salon
 
-        # ====================================================
-        # BOTÓN LUZ HABITACIÓN
-        # ====================================================
-
         - button:
             id: boton_luz_habitacion
-            x: 240
-            y: 405
-            width: 220
-            height: 60
-
+            x: 170
+            y: 390
+            width: 150
+            height: 80
+            bg_color: bg_card
+            bg_opa: 100%
+            radius: 15
             widgets:
-
               - label:
+                  x: 0
+                  y: 0
                   align: CENTER
-                  text: "💡  HABITACIÓN"
-                  text_font: montserrat_16
-
+                  text: "$mdi_lightbulb"
+                  text_font: mdi_icons_40
+                  text_color: accent_color
+              - label:
+                  x: 0
+                  y: 45
+                  align: CENTER
+                  text: "HABITACIÓN"
+                  text_font: nunito_16
+                  text_color: text_primary
             on_click:
               - homeassistant.action:
                   action: light.toggle
                   data:
                     entity_id: light.bombilla_habitacion
+
+        - button:
+            id: boton_ventanas
+            x: 330
+            y: 390
+            width: 150
+            height: 80
+            bg_color: bg_card
+            bg_opa: 100%
+            radius: 15
+            widgets:
+              - label:
+                  x: 0
+                  y: 0
+                  align: CENTER
+                  text: "$mdi_window_open"
+                  text_font: mdi_icons_40
+                  text_color: primary_color
+              - label:
+                  x: 0
+                  y: 45
+                  align: CENTER
+                  text: "VENTANAS"
+                  text_font: nunito_16
+                  text_color: text_primary
+            on_click:
+              - homeassistant.action:
+                  action: cover.toggle
+                  data:
+                    entity_id: cover.ventana_salon
+
+    # ========================================================
+    # PÁGINA DE DETALLES - SALÓN
+    # ========================================================
+
+    - id: pagina_salon
+      bg_color: bg_dark
+      widgets:
+        # Botón de vuelta
+        - button:
+            id: boton_volver_salon
+            x: 10
+            y: 10
+            width: 60
+            height: 50
+            bg_color: bg_card
+            bg_opa: 100%
+            radius: 10
+            widgets:
+              - label:
+                  x: 0
+                  y: 0
+                  align: CENTER
+                  text: "$mdi_arrow_left"
+                  text_font: mdi_icons_40
+                  text_color: text_primary
+            on_click:
+              - lvgl.page.show: pagina_principal
+
+        - label:
+            x: 80
+            y: 20
+            text: "DETALLES - SALÓN"
+            text_font: nunito_24
+            text_color: text_primary
+
+        # Temperatura grande
+        - container:
+            x: 20
+            y: 80
+            width: 440
+            height: 120
+            bg_color: bg_card
+            bg_opa: 100%
+            radius: 15
+            pad_all: 20
+            widgets:
+              - label:
+                  x: 20
+                  y: 20
+                  text: "$mdi_thermostat"
+                  text_font: mdi_icons_40
+                  text_color: accent_color
+              - label:
+                  x: 80
+                  y: 20
+                  text: "Temperatura"
+                  text_font: nunito_20
+                  text_color: text_secondary
+              - label:
+                  id: valor_temperatura_salon
+                  x: 80
+                  y: 60
+                  text: "--.- °C"
+                  text_font: nunito_24
+                  text_color: text_primary
+
+        # Humedad grande
+        - container:
+            x: 20
+            y: 220
+            width: 210
+            height: 100
+            bg_color: bg_card
+            bg_opa: 100%
+            radius: 15
+            pad_all: 15
+            widgets:
+              - label:
+                  x: 10
+                  y: 10
+                  text: "$mdi_water_percent"
+                  text_font: mdi_icons_40
+                  text_color: primary_color
+              - label:
+                  x: 60
+                  y: 10
+                  text: "Humedad"
+                  text_font: nunito_18
+                  text_color: text_secondary
+              - label:
+                  id: valor_humedad_salon
+                  x: 60
+                  y: 45
+                  text: "-- %"
+                  text_font: nunito_22
+                  text_color: text_primary
+
+        # Iluminación
+        - container:
+            x: 240
+            y: 220
+            width: 210
+            height: 100
+            bg_color: bg_card
+            bg_opa: 100%
+            radius: 15
+            pad_all: 15
+            widgets:
+              - label:
+                  x: 10
+                  y: 10
+                  text: "$mdi_weather_sunny"
+                  text_font: mdi_icons_40
+                  text_color: accent_color
+              - label:
+                  x: 60
+                  y: 10
+                  text: "Iluminación"
+                  text_font: nunito_18
+                  text_color: text_secondary
+              - label:
+                  id: valor_iluminacion_salon
+                  x: 60
+                  y: 45
+                  text: "--- lx"
+                  text_font: nunito_22
+                  text_color: text_primary
+
+        # Botón de luz
+        - button:
+            id: boton_luz_salon_detalle
+            x: 20
+            y: 340
+            width: 440
+            height: 80
+            bg_color: bg_card
+            bg_opa: 100%
+            radius: 15
+            widgets:
+              - label:
+                  x: 0
+                  y: 0
+                  align: CENTER
+                  text: "$mdi_lightbulb"
+                  text_font: mdi_icons_40
+                  text_color: accent_color
+              - label:
+                  x: 0
+                  y: 45
+                  align: CENTER
+                  text: "TOGGLE LUZ SALÓN"
+                  text_font: nunito_20
+                  text_color: text_primary
+            on_click:
+              - homeassistant.action:
+                  action: light.toggle
+                  data:
+                    entity_id: light.bombilla_salon
+
+    # ========================================================
+    # PÁGINA DE DETALLES - DORMITORIO
+    # ========================================================
+
+    - id: pagina_dormitorio
+      bg_color: bg_dark
+      widgets:
+        # Botón de vuelta
+        - button:
+            id: boton_volver_dormitorio
+            x: 10
+            y: 10
+            width: 60
+            height: 50
+            bg_color: bg_card
+            bg_opa: 100%
+            radius: 10
+            widgets:
+              - label:
+                  x: 0
+                  y: 0
+                  align: CENTER
+                  text: "$mdi_arrow_left"
+                  text_font: mdi_icons_40
+                  text_color: text_primary
+            on_click:
+              - lvgl.page.show: pagina_principal
+
+        - label:
+            x: 80
+            y: 20
+            text: "DETALLES - DORMITORIO"
+            text_font: nunito_24
+            text_color: text_primary
+
+        # Temperatura grande
+        - container:
+            x: 20
+            y: 80
+            width: 440
+            height: 120
+            bg_color: bg_card
+            bg_opa: 100%
+            radius: 15
+            pad_all: 20
+            widgets:
+              - label:
+                  x: 20
+                  y: 20
+                  text: "$mdi_thermostat"
+                  text_font: mdi_icons_40
+                  text_color: accent_color
+              - label:
+                  x: 80
+                  y: 20
+                  text: "Temperatura"
+                  text_font: nunito_20
+                  text_color: text_secondary
+              - label:
+                  id: valor_temperatura_dormitorio
+                  x: 80
+                  y: 60
+                  text: "--.- °C"
+                  text_font: nunito_24
+                  text_color: text_primary
+
+        # Humedad grande
+        - container:
+            x: 20
+            y: 220
+            width: 210
+            height: 100
+            bg_color: bg_card
+            bg_opa: 100%
+            radius: 15
+            pad_all: 15
+            widgets:
+              - label:
+                  x: 10
+                  y: 10
+                  text: "$mdi_water_percent"
+                  text_font: mdi_icons_40
+                  text_color: primary_color
+              - label:
+                  x: 60
+                  y: 10
+                  text: "Humedad"
+                  text_font: nunito_18
+                  text_color: text_secondary
+              - label:
+                  id: valor_humedad_dormitorio
+                  x: 60
+                  y: 45
+                  text: "-- %"
+                  text_font: nunito_22
+                  text_color: text_primary
+
+        # Botón de luz
+        - button:
+            id: boton_luz_dormitorio_detalle
+            x: 20
+            y: 340
+            width: 440
+            height: 80
+            bg_color: bg_card
+            bg_opa: 100%
+            radius: 15
+            widgets:
+              - label:
+                  x: 0
+                  y: 0
+                  align: CENTER
+                  text: "$mdi_lightbulb"
+                  text_font: mdi_icons_40
+                  text_color: accent_color
+              - label:
+                  x: 0
+                  y: 45
+                  align: CENTER
+                  text: "TOGGLE LUZ HABITACIÓN"
+                  text_font: nunito_20
+                  text_color: text_primary
+            on_click:
+              - homeassistant.action:
+                  action: light.toggle
+                  data:
+                    entity_id: light.bombilla_habitacion
+
+# ============================================================
+# NAVEGACIÓN POR SWIPE
+# ============================================================
+
+script:
+  - id: swipe_left_handler
+    then:
+      - if:
+          condition:
+            - lambda: 'return id(pagina_principal).is_visible();'
+          then:
+            - lvgl.page.show: pagina_salon
+      - if:
+          condition:
+            - lambda: 'return id(pagina_salon).is_visible();'
+          then:
+            - lvgl.page.show: pagina_dormitorio
+
+  - id: swipe_right_handler
+    then:
+      - if:
+          condition:
+            - lambda: 'return id(pagina_dormitorio).is_visible();'
+          then:
+            - lvgl.page.show: pagina_salon
+      - if:
+          condition:
+            - lambda: 'return id(pagina_salon).is_visible();'
+          then:
+            - lvgl.page.show: pagina_principal
