@@ -133,68 +133,132 @@ touchscreen:
 # ============================================================
 # HORA / FECHA (SNTP)
 # ============================================================
+# Actualiza el reloj y la fecha cada minuto. Ambos viven en la
+# `top_layer` de LVGL, asi que se ven en todas las paginas.
 
 time:
   - platform: sntp
     id: hora_tiempo
+    timezone: Europe/Madrid
     on_time:
       - seconds: 0
         minutes: /1
         then:
           - lvgl.label.update:
-              id: hora_actual
+              id: lbl_hora
               text: !lambda |-
                 char buf[6];
                 id(hora_tiempo).now().strftime(buf, 6, "%H:%M");
                 return buf;
           - lvgl.label.update:
-              id: fecha_actual
+              id: lbl_fecha
               text: !lambda |-
                 char buf[11];
                 id(hora_tiempo).now().strftime(buf, 11, "%d/%m/%Y");
                 return buf;
 
 # ============================================================
-# COLORES PERSONALIZADOS
+# COLORES - PALETA "PIZARLA FRIA" (azul desaturado)
 # ============================================================
+# Toda la UI referencia estos IDs, no hay ni un solo hex suelto
+# en la seccion LVGL ni en los lambdas de umbral (que usan
+# `lv_color_make(id(c_xxx).r, ...)`).
+#
+# Este fichero es autonomo: la paleta va escrita aqui, sin
+# `!include`, para que el ESPHome Builder no dependa de resolver
+# ficheros externos.
+#
+# La variante calida esta en `pantalla-calida.yaml`. Es una copia
+# de este fichero con el bloque de abajo sustituido; el resto es
+# identico. Para usarla, cambia la ruta del Builder a ese fichero.
 
 color:
-  - id: primary_color
-    hex: "7A8FA6"
-  - id: secondary_color
-    hex: "8FA68F"
-  - id: accent_color
-    hex: "C2B49A"
-  - id: error_color
-    hex: "B07A70"
-  - id: bg_dark
-    hex: "1C1B19"
-  - id: bg_card
-    hex: "2B2927"
-  - id: text_primary
-    hex: "D9D5CF"
-  - id: text_secondary
-    hex: "8F8A82"
-  - id: text_accent
-    hex: "A9B8C7"
+  # ---- Fondo y superficies ----
+  - id: c_bg
+    hex: "0B1220"   # fondo de pagina
+  - id: c_surface
+    hex: "16202E"   # tarjetas
+  - id: c_surface_hi
+    hex: "1F2C3D"   # navegacion inactiva / superficies elevadas
+  - id: c_accent_soft
+    hex: "24374A"   # relleno sutil de acento
+  - id: c_line
+    hex: "2C3A4D"   # bordes, pistas de barras y arcos
+
+  # ---- Texto ----
+  - id: c_text
+    hex: "DCE4EE"   # texto principal
+  - id: c_text_dim
+    hex: "8A99AD"   # etiquetas secundarias
+  - id: c_muted
+    hex: "5C6B80"   # inactivo / deshabilitado
+
+  # ---- Acento ----
+  - id: c_accent
+    hex: "7FA7C7"   # azul frio
+  - id: c_on_accent
+    hex: "0B1220"   # texto sobre acento
+
+  # ---- Estados (umbrales) ----
+  - id: c_ok
+    hex: "86B69B"   # verde salvia
+  - id: c_warn
+    hex: "C2B49A"   # arena apagada (nada de ambar)
+  - id: c_bad
+    hex: "B07A70"   # ladrido apagado (nada de rojo puro)
+  - id: c_cool
+    hex: "7FA7C7"   # frio: umbral bajo de temperatura
 
 # ============================================================
-# FUENTES (gfonts: proveedor nativo de ESPHome)
+# FUENTES
 # ============================================================
+# gfonts descarga el TTF completo de Roboto. Limitamos `glyphs`
+# al ASCII imprimible + el signo de grado para que las fuentes
+# ocupen lo minimo en flash (importante: son 5 fuentes).
+#
+# Sin acentos a proposito (ver commit 2d7d1a2): todas las
+# etiquetas de la UI estan escritas en ASCII.
 
 font:
   - file: "gfonts://Roboto"
-    id: font_small
+    id: font_xs
+    size: 12
+    bpp: 4
+    glyphs: ' !"#$%&''()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~°'
+
+  - file: "gfonts://Roboto"
+    id: font_s
     size: 16
+    bpp: 4
+    glyphs: ' !"#$%&''()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~°'
+
   - file: "gfonts://Roboto"
-    id: font_medium
+    id: font_m
     size: 20
+    bpp: 4
+    glyphs: ' !"#$%&''()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~°'
+
   - file: "gfonts://Roboto"
-    id: font_large
-    size: 26
+    id: font_l
+    size: 30
+    bpp: 4
+    glyphs: ' !"#$%&''()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~°'
+
   - file: "gfonts://Roboto"
-    id: font_title
-    size: 32
+    id: font_xl
+    size: 48
+    bpp: 4
+    glyphs: ' !"#$%&''()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~°'
+
+# ============================================================
+# GLOBALS
+# ============================================================
+
+globals:
+  - id: pagina_actual
+    type: int
+    restore_value: no
+    initial_value: '0'
 
 # ============================================================
 # SENSORES DE HOME ASSISTANT
@@ -203,364 +267,582 @@ font:
 sensor:
 
   # ----------------------------------------------------------
-  # Salón
+  # INICIO - Casa (promediadas)
   # ----------------------------------------------------------
 
   - platform: homeassistant
-    id: temperatura_salon
-    entity_id: sensor.sonoff_snzb_02d_temperatura
-    on_value:
-      - lvgl.label.update:
-          id: main_valor_temperatura_salon
-          text:
-            format: "%.1fC"
-            args: [ 'x' ]
-      - lvgl.label.update:
-          id: detail_valor_temperatura_salon
-          text:
-            format: "%.1fC"
-            args: [ 'x' ]
-      - if:
-          condition:
-            - lambda: 'return x > 25;'
-          then:
-            - lvgl.label.update:
-                id: main_valor_temperatura_salon
-                text_color: 0xE8A5A0
-            - lvgl.label.update:
-                id: detail_valor_temperatura_salon
-                text_color: 0xE8A5A0
-      - if:
-          condition:
-            - lambda: 'return x <= 25 && x >= 20;'
-          then:
-            - lvgl.label.update:
-                id: main_valor_temperatura_salon
-                text_color: 0x86B69B
-            - lvgl.label.update:
-                id: detail_valor_temperatura_salon
-                text_color: 0x86B69B
-      - if:
-          condition:
-            - lambda: 'return x < 20;'
-          then:
-            - lvgl.label.update:
-                id: main_valor_temperatura_salon
-                text_color: 0x7FA7C7
-            - lvgl.label.update:
-                id: detail_valor_temperatura_salon
-                text_color: 0x7FA7C7
-
-  - platform: homeassistant
-    id: humedad_salon
-    entity_id: sensor.sonoff_snzb_02d_humedad
-    on_value:
-      - lvgl.label.update:
-          id: main_valor_humedad_salon
-          text:
-            format: "%.0f %%"
-            args: [ 'x' ]
-      - lvgl.label.update:
-          id: detail_valor_humedad_salon
-          text:
-            format: "%.0f %%"
-            args: [ 'x' ]
-      - if:
-          condition:
-            - lambda: 'return x > 60;'
-          then:
-            - lvgl.label.update:
-                id: main_valor_humedad_salon
-                text_color: 0x7FA7C7
-            - lvgl.label.update:
-                id: detail_valor_humedad_salon
-                text_color: 0x7FA7C7
-
-  - platform: homeassistant
-    id: iluminacion_salon
-    entity_id: sensor.sensor_iluminacion_iluminancia
-    on_value:
-      - lvgl.label.update:
-          id: main_valor_iluminacion_salon
-          text:
-            format: "%.0f lx"
-            args: [ 'x' ]
-
-  # ----------------------------------------------------------
-  # Temperatura / humedad general
-  # ----------------------------------------------------------
-
-  - platform: homeassistant
-    id: temperatura_general
+    id: temp_casa
     entity_id: sensor.house_temperature
     on_value:
       - lvgl.label.update:
-          id: main_valor_temperatura_general
-          text:
-            format: "%.1fC"
-            args: [ 'x' ]
-      - if:
-          condition:
-            - lambda: 'return x > 25;'
-          then:
-            - lvgl.label.update:
-                id: main_valor_temperatura_general
-                text_color: 0xE8A5A0
-      - if:
-          condition:
-            - lambda: 'return x <= 25 && x >= 20;'
-          then:
-            - lvgl.label.update:
-                id: main_valor_temperatura_general
-                text_color: 0x86B69B
-      - if:
-          condition:
-            - lambda: 'return x < 20;'
-          then:
-            - lvgl.label.update:
-                id: main_valor_temperatura_general
-                text_color: 0x7FA7C7
+          id: lbl_temp_casa
+          text: !lambda |-
+            char b[16];
+            snprintf(b, sizeof(b), "%.1f°C", x);
+            return std::string(b);
+          text_color: !lambda |-
+            return x > 25.0f ? lv_color_make(id(c_bad).r, id(c_bad).g, id(c_bad).b)
+                   : x < 20.0f ? lv_color_make(id(c_cool).r, id(c_cool).g, id(c_cool).b)
+                               : lv_color_make(id(c_ok).r, id(c_ok).g, id(c_ok).b);
+      - lvgl.bar.update:
+          id: bar_temp_casa
+          value: !lambda |-
+            return (x - 15.0f) * 100.0f / 20.0f;
+          indicator:
+            bg_color: !lambda |-
+              return x > 25.0f ? lv_color_make(id(c_bad).r, id(c_bad).g, id(c_bad).b)
+                     : x < 20.0f ? lv_color_make(id(c_cool).r, id(c_cool).g, id(c_cool).b)
+                                 : lv_color_make(id(c_ok).r, id(c_ok).g, id(c_ok).b);
 
   - platform: homeassistant
-    id: humedad_general
+    id: hum_casa
     entity_id: sensor.house_humidity
     on_value:
       - lvgl.label.update:
-          id: main_valor_humedad_general
-          text:
-            format: "%.0f %%"
-            args: [ 'x' ]
+          id: lbl_hum_casa
+          text: !lambda |-
+            char b[16];
+            snprintf(b, sizeof(b), "%.0f%%", x);
+            return std::string(b);
+          text_color: !lambda |-
+            return (x < 30.0f || x > 60.0f) ? lv_color_make(id(c_warn).r, id(c_warn).g, id(c_warn).b)
+                                            : lv_color_make(id(c_ok).r, id(c_ok).g, id(c_ok).b);
 
   # ----------------------------------------------------------
-  # Dormitorio
+  # INICIO - Clima exterior
+  # ----------------------------------------------------------
+  # La temperatura viene de un template sensor porque la
+  # plataforma `homeassistant` no puede leer atributos.
+
+  - platform: homeassistant
+    id: temp_exterior
+    entity_id: sensor.pantalla_temp_exterior
+    on_value:
+      - lvgl.label.update:
+          id: lbl_temp_ext
+          text: !lambda |-
+            char b[16];
+            snprintf(b, sizeof(b), "%.0f°C", x);
+            return std::string(b);
+
+
+  # ----------------------------------------------------------
+  # INICIO - Salon
   # ----------------------------------------------------------
 
   - platform: homeassistant
-    id: temperatura_dormitorio
+    id: temp_salon
+    entity_id: sensor.sonoff_snzb_02d_temperatura
+    on_value:
+      - lvgl.label.update:
+          id: lbl_temp_salon
+          text: !lambda |-
+            char b[16];
+            snprintf(b, sizeof(b), "%.1f°C", x);
+            return std::string(b);
+          text_color: !lambda |-
+            return x > 25.0f ? lv_color_make(id(c_bad).r, id(c_bad).g, id(c_bad).b)
+                   : x < 20.0f ? lv_color_make(id(c_cool).r, id(c_cool).g, id(c_cool).b)
+                               : lv_color_make(id(c_ok).r, id(c_ok).g, id(c_ok).b);
+
+  - platform: homeassistant
+    id: hum_salon
+    entity_id: sensor.sonoff_snzb_02d_humedad
+    on_value:
+      - lvgl.label.update:
+          id: lbl_hum_salon
+          text: !lambda |-
+            char b[16];
+            snprintf(b, sizeof(b), "%.0f%%", x);
+            return std::string(b);
+
+  # ----------------------------------------------------------
+  # DORMITORIO
+  # ----------------------------------------------------------
+
+  - platform: homeassistant
+    id: temp_dormitorio
     entity_id: sensor.tze200_cirvgep4_ts0601_temperatura
     on_value:
       - lvgl.label.update:
-          id: main_valor_temperatura_dormitorio
-          text:
-            format: "%.1fC"
-            args: [ 'x' ]
+          id: lbl_temp_dormitorio
+          text: !lambda |-
+            char b[16];
+            snprintf(b, sizeof(b), "%.1f°C", x);
+            return std::string(b);
+          text_color: !lambda |-
+            return x > 25.0f ? lv_color_make(id(c_bad).r, id(c_bad).g, id(c_bad).b)
+                   : x < 20.0f ? lv_color_make(id(c_cool).r, id(c_cool).g, id(c_cool).b)
+                               : lv_color_make(id(c_ok).r, id(c_ok).g, id(c_ok).b);
       - lvgl.label.update:
-          id: detail_valor_temperatura_dormitorio
-          text:
-            format: "%.1fC"
-            args: [ 'x' ]
-      - if:
-          condition:
-            - lambda: 'return x > 25;'
-          then:
-            - lvgl.label.update:
-                id: main_valor_temperatura_dormitorio
-                text_color: 0xE8A5A0
-            - lvgl.label.update:
-                id: detail_valor_temperatura_dormitorio
-                text_color: 0xE8A5A0
-      - if:
-          condition:
-            - lambda: 'return x <= 25 && x >= 20;'
-          then:
-            - lvgl.label.update:
-                id: main_valor_temperatura_dormitorio
-                text_color: 0x86B69B
-            - lvgl.label.update:
-                id: detail_valor_temperatura_dormitorio
-                text_color: 0x86B69B
-      - if:
-          condition:
-            - lambda: 'return x < 20;'
-          then:
-            - lvgl.label.update:
-                id: main_valor_temperatura_dormitorio
-                text_color: 0x7FA7C7
-            - lvgl.label.update:
-                id: detail_valor_temperatura_dormitorio
-                text_color: 0x7FA7C7
+          id: lbl_temp_dormitorio_hero
+          text: !lambda |-
+            char b[16];
+            snprintf(b, sizeof(b), "%.1f°C", x);
+            return std::string(b);
+          text_color: !lambda |-
+            return x > 25.0f ? lv_color_make(id(c_bad).r, id(c_bad).g, id(c_bad).b)
+                   : x < 20.0f ? lv_color_make(id(c_cool).r, id(c_cool).g, id(c_cool).b)
+                               : lv_color_make(id(c_ok).r, id(c_ok).g, id(c_ok).b);
+      - lvgl.bar.update:
+          id: bar_temp_dormitorio
+          value: !lambda |-
+            return (x - 15.0f) * 100.0f / 20.0f;
+          indicator:
+            bg_color: !lambda |-
+              return x > 25.0f ? lv_color_make(id(c_bad).r, id(c_bad).g, id(c_bad).b)
+                     : x < 20.0f ? lv_color_make(id(c_cool).r, id(c_cool).g, id(c_cool).b)
+                                 : lv_color_make(id(c_ok).r, id(c_ok).g, id(c_ok).b);
 
   - platform: homeassistant
-    id: humedad_dormitorio
+    id: hum_dormitorio
     entity_id: sensor.tze200_cirvgep4_ts0601_humedad
     on_value:
       - lvgl.label.update:
-          id: main_valor_humedad_dormitorio
-          text:
-            format: "%.0f %%"
-            args: [ 'x' ]
+          id: lbl_hum_dormitorio
+          text: !lambda |-
+            char b[16];
+            snprintf(b, sizeof(b), "%.0f%%", x);
+            return std::string(b);
+          text_color: !lambda |-
+            return (x < 30.0f || x > 60.0f) ? lv_color_make(id(c_warn).r, id(c_warn).g, id(c_warn).b)
+                                            : lv_color_make(id(c_ok).r, id(c_ok).g, id(c_ok).b);
       - lvgl.label.update:
-          id: detail_valor_humedad_dormitorio
-          text:
-            format: "%.0f %%"
-            args: [ 'x' ]
+          id: lbl_hum_dormitorio_hero
+          text: !lambda |-
+            char b[16];
+            snprintf(b, sizeof(b), "%.0f%%", x);
+            return std::string(b);
+
+  - platform: homeassistant
+    id: bateria_dormitorio
+    entity_id: sensor.tze200_cirvgep4_ts0601_bateria
+    on_value:
+      - lvgl.label.update:
+          id: lbl_bateria_dormitorio
+          text: !lambda |-
+            char b[16];
+            snprintf(b, sizeof(b), "%.0f%%", x);
+            return std::string(b);
+          text_color: !lambda |-
+            return x < 20.0f ? lv_color_make(id(c_bad).r, id(c_bad).g, id(c_bad).b)
+                   : x < 40.0f ? lv_color_make(id(c_warn).r, id(c_warn).g, id(c_warn).b)
+                               : lv_color_make(id(c_text).r, id(c_text).g, id(c_text).b);
+      - lvgl.bar.update:
+          id: bar_bateria_dormitorio
+          value: !lambda 'return x;'
+          indicator:
+            bg_color: !lambda |-
+              return x < 20.0f ? lv_color_make(id(c_bad).r, id(c_bad).g, id(c_bad).b)
+                     : x < 40.0f ? lv_color_make(id(c_warn).r, id(c_warn).g, id(c_warn).b)
+                                 : lv_color_make(id(c_ok).r, id(c_ok).g, id(c_ok).b);
 
   # ----------------------------------------------------------
-  # Aire acondicionado
+  # AIRE
   # ----------------------------------------------------------
 
   - platform: homeassistant
-    id: temperatura_aire
+    id: co2_hab_peque
+    entity_id: sensor.sensor_aire_conectado_dioxido_de_carbono
+    on_value:
+      - lvgl.label.update:
+          id: lbl_co2
+          text: !lambda |-
+            char b[16];
+            snprintf(b, sizeof(b), "%.0f", x);
+            return std::string(b);
+          text_color: !lambda |-
+            return x > 1000.0f ? lv_color_make(id(c_bad).r, id(c_bad).g, id(c_bad).b)
+                   : x > 800.0f  ? lv_color_make(id(c_warn).r, id(c_warn).g, id(c_warn).b)
+                                 : lv_color_make(id(c_ok).r, id(c_ok).g, id(c_ok).b);
+      - lvgl.label.update:
+          id: lbl_co2_estado
+          text: !lambda |-
+            return x > 1000.0f ? std::string("MAL")
+                   : x > 800.0f  ? std::string("REGULAR")
+                                 : std::string("BUENA");
+      - lvgl.arc.update:
+          id: arco_co2
+          value: !lambda 'return x;'
+          indicator:
+            arc_color: !lambda |-
+              return x > 1000.0f ? lv_color_make(id(c_bad).r, id(c_bad).g, id(c_bad).b)
+                     : x > 800.0f  ? lv_color_make(id(c_warn).r, id(c_warn).g, id(c_warn).b)
+                                   : lv_color_make(id(c_ok).r, id(c_ok).g, id(c_ok).b);
+
+  - platform: homeassistant
+    id: cov_hab_peque
+    entity_id: sensor.sensor_aire_conectado_cov
+    on_value:
+      - lvgl.label.update:
+          id: lbl_cov
+          text: !lambda |-
+            char b[16];
+            snprintf(b, sizeof(b), "%.1f", x);
+            return std::string(b);
+          text_color: !lambda |-
+            return x > 3.0f ? lv_color_make(id(c_bad).r, id(c_bad).g, id(c_bad).b)
+                   : x > 1.0f ? lv_color_make(id(c_warn).r, id(c_warn).g, id(c_warn).b)
+                              : lv_color_make(id(c_ok).r, id(c_ok).g, id(c_ok).b);
+
+  - platform: homeassistant
+    id: formaldehido
+    entity_id: sensor.sensor_aire_conectado_concentracion_de_formaldehido
+    on_value:
+      - lvgl.label.update:
+          id: lbl_formaldehido
+          text: !lambda |-
+            char b[16];
+            snprintf(b, sizeof(b), "%.2f", x);
+            return std::string(b);
+          text_color: !lambda |-
+            return x > 0.10f ? lv_color_make(id(c_bad).r, id(c_bad).g, id(c_bad).b)
+                   : x > 0.05f ? lv_color_make(id(c_warn).r, id(c_warn).g, id(c_warn).b)
+                               : lv_color_make(id(c_ok).r, id(c_ok).g, id(c_ok).b);
+
+  - platform: homeassistant
+    id: temp_aire
     entity_id: sensor.sensor_aire_conectado_temperatura
     on_value:
       - lvgl.label.update:
-          id: main_valor_temperatura_aire
-          text:
-            format: "%.1fC"
-            args: [ 'x' ]
+          id: lbl_temp_aire
+          text: !lambda |-
+            char b[16];
+            snprintf(b, sizeof(b), "%.1f°C", x);
+            return std::string(b);
+          text_color: !lambda |-
+            return x > 25.0f ? lv_color_make(id(c_bad).r, id(c_bad).g, id(c_bad).b)
+                   : x < 20.0f ? lv_color_make(id(c_cool).r, id(c_cool).g, id(c_cool).b)
+                               : lv_color_make(id(c_ok).r, id(c_ok).g, id(c_ok).b);
 
   - platform: homeassistant
-    id: humedad_aire
+    id: hum_aire
     entity_id: sensor.sensor_aire_conectado_humedad
     on_value:
       - lvgl.label.update:
-          id: main_valor_humedad_aire
-          text:
-            format: "%.0f %%"
-            args: [ 'x' ]
+          id: lbl_hum_aire
+          text: !lambda |-
+            char b[16];
+            snprintf(b, sizeof(b), "%.0f%%", x);
+            return std::string(b);
+          text_color: !lambda |-
+            return (x < 30.0f || x > 60.0f) ? lv_color_make(id(c_warn).r, id(c_warn).g, id(c_warn).b)
+                                            : lv_color_make(id(c_ok).r, id(c_ok).g, id(c_ok).b);
 
-  # ----------------------------------------------------------
-  # Sensor de presencia / iluminación
-  # ----------------------------------------------------------
+# ============================================================
+# TEXT SENSORS DE HOME ASSISTANT
+# ============================================================
+# weather.forecast_casa expone texto ("cloudy"), no un numero,
+# asi que va en text_sensor: y no en sensor:.
+
+text_sensor:
 
   - platform: homeassistant
-    id: iluminancia_presencia
-    entity_id: sensor.smart_presence_sensor_iluminancia
+    id: condicion_clima
+    entity_id: weather.forecast_casa
+    internal: true
     on_value:
       - lvgl.label.update:
-          id: main_valor_iluminacion_salon
-          text:
-            format: "%.0f lx"
-            args: [ 'x' ]
+          id: lbl_clima_estado
+          text: !lambda |-
+            // HA devuelve el estado en minusculas y en ingles.
+            // Lo pasamos a minusculas y buscamos en una tabla.
+            std::string e = x;
+            for (auto &ch : e) ch = tolower(ch);
+            struct { const char *k; const char *v; } m[] = {
+                {"thunderstorm", "TORMENTA"}, {"snowy-rainy", "NIEVE Y LLUVIA"},
+                {"snowy",        "NIEVE"},    {"hail",         "GRANIZO"},
+                {"pouring",      "LLUVIA FUERTE"}, {"lightning", "TORMENTA"},
+                {"rainy",        "LLUVIA"},   {"partlycloudy", "PARCIAL"},
+                {"windy",        "VIENTO"},   {"fog",          "NIEBLA"},
+                {"cloudy",       "NUBLADO"},  {"sunny",        "SOL"},
+                {"clear-night",  "NOCHE DESPEJADA"}, {"clear", "SOL"},
+                {"exceptional",  "ALERTA"}};
+            for (auto &i : m)
+              if (e.find(i.k) != std::string::npos) return std::string(i.v);
+            return e.empty() ? std::string("SIN DATOS") : e.substr(0, 10);
 
 # ============================================================
-# BINARY SENSORS DE HOME ASSISTANT
+# SENSORES BINARIOS DE HOME ASSISTANT
 # ============================================================
+# Cada chip de estado actualiza texto y color en un solo action.
 
 binary_sensor:
-
-  # ----------------------------------------------------------
-  # MOVIMIENTO
-  # ----------------------------------------------------------
-
-  - platform: homeassistant
-    id: movimiento_salon
-    entity_id: binary_sensor.e1_zoom_movimiento
-
-    on_state:
-      then:
-        - lvgl.label.update:
-            id: main_estado_movimiento
-            text: !lambda |-
-              return std::string(x ? "MOVIMIENTO" : "SIN MOVIMIENTO");
-        - if:
-            condition:
-              - lambda: 'return x;'
-            then:
-              - lvgl.label.update:
-                  id: main_estado_movimiento
-                  text_color: 0x86B69B
-        - if:
-            condition:
-              - lambda: 'return !x;'
-            then:
-              - lvgl.label.update:
-                  id: main_estado_movimiento
-                  text_color: 0x556070
-
-  # ----------------------------------------------------------
-  # PRESENCIA
-  # ----------------------------------------------------------
 
   - platform: homeassistant
     id: presencia_casa
     entity_id: binary_sensor.sensor_presencia
-
     on_state:
-      then:
-        - lvgl.label.update:
-            id: main_estado_presencia
-            text: !lambda |-
-              return std::string(x ? "PRESENCIA" : "SIN PRESENCIA");
-        - if:
-            condition:
-              - lambda: 'return x;'
-            then:
-              - lvgl.label.update:
-                  id: main_estado_presencia
-                  text_color: 0x86B69B
-        - if:
-            condition:
-              - lambda: 'return !x;'
-            then:
-              - lvgl.label.update:
-                  id: main_estado_presencia
-                  text_color: 0x556070
+      - lvgl.label.update:
+          id: lbl_chip_presencia
+          text: !lambda 'return x ? std::string("SI") : std::string("NO");'
+          text_color: !lambda |-
+            return x ? lv_color_make(id(c_ok).r, id(c_ok).g, id(c_ok).b) : lv_color_make(id(c_muted).r, id(c_muted).g, id(c_muted).b);
 
-  # ----------------------------------------------------------
-  # VENTANA SALÓN
-  # ----------------------------------------------------------
+  - platform: homeassistant
+    id: movimiento_salon
+    entity_id: binary_sensor.e1_zoom_movimiento
+    on_state:
+      - lvgl.label.update:
+          id: lbl_chip_movimiento
+          text: !lambda 'return x ? std::string("SI") : std::string("NO");'
+          text_color: !lambda |-
+            return x ? lv_color_make(id(c_ok).r, id(c_ok).g, id(c_ok).b) : lv_color_make(id(c_muted).r, id(c_muted).g, id(c_muted).b);
+
+  - platform: homeassistant
+    id: puerta_entrada
+    entity_id: binary_sensor.tz3000_bpkijo14_ts0203_2
+    on_state:
+      - lvgl.label.update:
+          id: lbl_chip_puerta
+          text: !lambda 'return x ? std::string("ABIERTA") : std::string("CERRADA");'
+          text_color: !lambda |-
+            return x ? lv_color_make(id(c_warn).r, id(c_warn).g, id(c_warn).b) : lv_color_make(id(c_muted).r, id(c_muted).g, id(c_muted).b);
 
   - platform: homeassistant
     id: ventana_salon
     entity_id: binary_sensor.ventana_salon
-
     on_state:
-      then:
-        - lvgl.label.update:
-            id: main_estado_ventana_salon
-            text: !lambda |-
-              return std::string(x ? "ABIERTA" : "CERRADA");
-        - if:
-            condition:
-              - lambda: 'return x;'
-            then:
-              - lvgl.label.update:
-                  id: main_estado_ventana_salon
-                  text_color: 0xB5BBC9
-        - if:
-            condition:
-              - lambda: 'return !x;'
-            then:
-              - lvgl.label.update:
-                  id: main_estado_ventana_salon
-                  text_color: 0x86B69B
-
-  # ----------------------------------------------------------
-  # VENTANA DORMITORIO
-  # ----------------------------------------------------------
+      - lvgl.label.update:
+          id: lbl_chip_ventana
+          text: !lambda 'return x ? std::string("ABIERTA") : std::string("CERRADA");'
+          text_color: !lambda |-
+            return x ? lv_color_make(id(c_warn).r, id(c_warn).g, id(c_warn).b) : lv_color_make(id(c_muted).r, id(c_muted).g, id(c_muted).b);
 
   - platform: homeassistant
     id: ventana_dormitorio
     entity_id: binary_sensor.sensor_ventana_dormitorio
-
     on_state:
-      then:
-        - lvgl.label.update:
-            id: main_estado_ventana_dormitorio
-            text: !lambda |-
-              return std::string(x ? "ABIERTA" : "CERRADA");
-        - if:
-            condition:
-              - lambda: 'return x;'
-            then:
-              - lvgl.label.update:
-                  id: main_estado_ventana_dormitorio
-                  text_color: 0xB5BBC9
-        - if:
-            condition:
-              - lambda: 'return !x;'
-            then:
-              - lvgl.label.update:
-                  id: main_estado_ventana_dormitorio
-                  text_color: 0x86B69B
+      - lvgl.label.update:
+          id: lbl_ventana_dormitorio
+          text: !lambda 'return x ? std::string("ABIERTA") : std::string("CERRADA");'
+          text_color: !lambda |-
+            return x ? lv_color_make(id(c_warn).r, id(c_warn).g, id(c_warn).b) : lv_color_make(id(c_muted).r, id(c_muted).g, id(c_muted).b);
+
+# ============================================================
+# INTERRUPTORES (estado + control desde la pantalla)
+# ============================================================
+# `internal: true` -> no aparecen en HA, solo sirven de espejo
+# controlable dentro de la pantalla.
+
+switch:
+  - platform: homeassistant
+    id: sw_luz_salon
+    entity_id: light.bombilla_salon
+    internal: true
+    on_state:
+      - if:
+          condition:
+            lambda: return x;
+          then:
+            - lvgl.widget.update: {id: btn_luz_salon, bg_color: c_accent_soft}
+            - lvgl.label.update: {id: lbl_luz_salon_txt, text_color: c_accent}
+          else:
+            - lvgl.widget.update: {id: btn_luz_salon, bg_color: c_surface_hi}
+            - lvgl.label.update: {id: lbl_luz_salon_txt, text_color: c_muted}
+      - lvgl.label.update:
+          id: lbl_luz_salon_txt
+          text: !lambda 'return x ? std::string("ON") : std::string("OFF");'
+
+  - platform: homeassistant
+    id: sw_luz_habitacion
+    entity_id: light.bombilla_habitacion
+    internal: true
+    on_state:
+      - if:
+          condition:
+            lambda: return x;
+          then:
+            - lvgl.widget.update: {id: btn_luz_habitacion, bg_color: c_accent_soft}
+            - lvgl.widget.update: {id: btn_luz_dorm_det, bg_color: c_accent_soft}
+            - lvgl.label.update: {id: lbl_luz_habitacion_txt, text_color: c_accent}
+            - lvgl.label.update: {id: lbl_luz_dorm_det_txt, text_color: c_accent}
+          else:
+            - lvgl.widget.update: {id: btn_luz_habitacion, bg_color: c_surface_hi}
+            - lvgl.widget.update: {id: btn_luz_dorm_det, bg_color: c_surface_hi}
+            - lvgl.label.update: {id: lbl_luz_habitacion_txt, text_color: c_muted}
+            - lvgl.label.update: {id: lbl_luz_dorm_det_txt, text_color: c_muted}
+      - lvgl.label.update:
+          id: lbl_luz_habitacion_txt
+          text: !lambda 'return x ? std::string("ON") : std::string("OFF");'
+      - lvgl.label.update:
+          id: lbl_luz_dorm_det_txt
+          text: !lambda 'return x ? std::string("ON") : std::string("OFF");'
+
+  - platform: homeassistant
+    id: sw_enchufe
+    entity_id: switch.1001dfd86a_1
+    internal: true
+    on_state:
+      - if:
+          condition:
+            lambda: return x;
+          then:
+            - lvgl.widget.update: {id: btn_enchufe, bg_color: c_accent_soft}
+            - lvgl.label.update: {id: lbl_enchufe_txt, text_color: c_accent}
+          else:
+            - lvgl.widget.update: {id: btn_enchufe, bg_color: c_surface_hi}
+            - lvgl.label.update: {id: lbl_enchufe_txt, text_color: c_muted}
+      - lvgl.label.update:
+          id: lbl_enchufe_txt
+          text: !lambda 'return x ? std::string("ON") : std::string("OFF");'
+
+# ============================================================
+# SCRIPTS
+# ============================================================
+
+script:
+
+  # ----------------------------------------------------------
+  # Navegacion: resalta el boton de la pagina activa
+  # ----------------------------------------------------------
+  - id: nav_reset
+    then:
+      - lvgl.widget.update: {id: nav_1, bg_color: c_surface_hi}
+      - lvgl.widget.update: {id: nav_1_txt, text_color: c_muted}
+      - lvgl.widget.update: {id: nav_1_bar, bg_opa: 0%}
+      - lvgl.widget.update: {id: nav_2, bg_color: c_surface_hi}
+      - lvgl.widget.update: {id: nav_2_txt, text_color: c_muted}
+      - lvgl.widget.update: {id: nav_2_bar, bg_opa: 0%}
+      - lvgl.widget.update: {id: nav_3, bg_color: c_surface_hi}
+      - lvgl.widget.update: {id: nav_3_txt, text_color: c_muted}
+      - lvgl.widget.update: {id: nav_3_bar, bg_opa: 0%}
+
+  - id: nav_set
+    parameters:
+      activo: int
+    then:
+      - lambda: id(pagina_actual) = (int) activo;
+      - script.execute: nav_reset
+      - if:
+          condition:
+            lambda: return (int) activo == 1;
+          then:
+            - lvgl.widget.update: {id: nav_1, bg_color: c_accent_soft}
+            - lvgl.widget.update: {id: nav_1_txt, text_color: c_accent}
+            - lvgl.widget.update: {id: nav_1_bar, bg_opa: 100%}
+      - if:
+          condition:
+            lambda: return (int) activo == 2;
+          then:
+            - lvgl.widget.update: {id: nav_2, bg_color: c_accent_soft}
+            - lvgl.widget.update: {id: nav_2_txt, text_color: c_accent}
+            - lvgl.widget.update: {id: nav_2_bar, bg_opa: 100%}
+      - if:
+          condition:
+            lambda: return (int) activo == 3;
+          then:
+            - lvgl.widget.update: {id: nav_3, bg_color: c_accent_soft}
+            - lvgl.widget.update: {id: nav_3_txt, text_color: c_accent}
+            - lvgl.widget.update: {id: nav_3_bar, bg_opa: 100%}
+
+  # ----------------------------------------------------------
+  # Ir a una pagina concreta, con transicion si es adyacente
+  # ----------------------------------------------------------
+  # Las paginas estan declaradas en orden, asi que `page.next` /
+  # `page.previous` coinciden con el indice. Si el salto no es
+  # adyacente se muestra directa (sin transicion).
+
+  - id: ir_1
+    then:
+      - if:
+          condition:
+            lambda: return (int) id(pagina_actual) == 1;
+          then:
+            - lvgl.page.next:
+                animation: MOVE_LEFT
+                time: 260ms
+          else:
+            - lvgl.page.show: pagina_inicio
+
+  - id: ir_2
+    then:
+      - if:
+          condition:
+            lambda: return (int) id(pagina_actual) == 1;
+          then:
+            - lvgl.page.next:
+                animation: MOVE_LEFT
+                time: 260ms
+          else:
+            - if:
+                condition:
+                  lambda: return (int) id(pagina_actual) == 2;
+                then:
+                  - lvgl.page.previous:
+                      animation: MOVE_RIGHT
+                      time: 260ms
+                else:
+                  - lvgl.page.show: pagina_dormitorio
+
+  - id: ir_3
+    then:
+      - if:
+          condition:
+            lambda: return (int) id(pagina_actual) == 2;
+          then:
+            - lvgl.page.next:
+                animation: MOVE_LEFT
+                time: 260ms
+          else:
+            - lvgl.page.show: pagina_aire
+
+  # ----------------------------------------------------------
+  # Sincroniza los botones toggle con el estado real al arrancar
+  # ----------------------------------------------------------
+  - id: refrescar_toggles
+    then:
+      - if:
+          condition:
+            lambda: return id(sw_luz_salon).state;
+          then:
+            - lvgl.widget.update: {id: btn_luz_salon, bg_color: c_accent_soft}
+            - lvgl.label.update: {id: lbl_luz_salon_txt, text_color: c_accent}
+          else:
+            - lvgl.widget.update: {id: btn_luz_salon, bg_color: c_surface_hi}
+            - lvgl.label.update: {id: lbl_luz_salon_txt, text_color: c_muted}
+      - lvgl.label.update:
+          id: lbl_luz_salon_txt
+          text: !lambda 'return id(sw_luz_salon).state ? std::string("ON") : std::string("OFF");'
+
+      - if:
+          condition:
+            lambda: return id(sw_luz_habitacion).state;
+          then:
+            - lvgl.widget.update: {id: btn_luz_habitacion, bg_color: c_accent_soft}
+            - lvgl.widget.update: {id: btn_luz_dorm_det, bg_color: c_accent_soft}
+            - lvgl.label.update: {id: lbl_luz_habitacion_txt, text_color: c_accent}
+            - lvgl.label.update: {id: lbl_luz_dorm_det_txt, text_color: c_accent}
+          else:
+            - lvgl.widget.update: {id: btn_luz_habitacion, bg_color: c_surface_hi}
+            - lvgl.widget.update: {id: btn_luz_dorm_det, bg_color: c_surface_hi}
+            - lvgl.label.update: {id: lbl_luz_habitacion_txt, text_color: c_muted}
+            - lvgl.label.update: {id: lbl_luz_dorm_det_txt, text_color: c_muted}
+      - lvgl.label.update:
+          id: lbl_luz_habitacion_txt
+          text: !lambda 'return id(sw_luz_habitacion).state ? std::string("ON") : std::string("OFF");'
+      - lvgl.label.update:
+          id: lbl_luz_dorm_det_txt
+          text: !lambda 'return id(sw_luz_habitacion).state ? std::string("ON") : std::string("OFF");'
+
+      - if:
+          condition:
+            lambda: return id(sw_enchufe).state;
+          then:
+            - lvgl.widget.update: {id: btn_enchufe, bg_color: c_accent_soft}
+            - lvgl.label.update: {id: lbl_enchufe_txt, text_color: c_accent}
+          else:
+            - lvgl.widget.update: {id: btn_enchufe, bg_color: c_surface_hi}
+            - lvgl.label.update: {id: lbl_enchufe_txt, text_color: c_muted}
+      - lvgl.label.update:
+          id: lbl_enchufe_txt
+          text: !lambda 'return id(sw_enchufe).state ? std::string("ON") : std::string("OFF");'
 
 # ============================================================
 # LVGL
 # ============================================================
 
 lvgl:
-
   displays:
     - tft_display
 
@@ -568,649 +850,943 @@ lvgl:
     - touchscreen_id: tft_touch
 
   color_depth: 16
-
   buffer_size: 25%
-
   refresh_interval: 50ms
 
-  theme:
-    button:
-      bg_color: 0x1E293B
-      bg_opa: 100%
-      border_width: 0
-      radius: 15
-      text_color: 0xE2E8F0
-      text_font: font_medium
+  # ------------------------------------------------------------
+  # CAPA SUPERIOR GLOBAL
+  # ------------------------------------------------------------
+  # `top_layer` existe sobre TODAS las paginas, asi que la barra
+  # de reloj y la de navegacion se declaran una sola vez y no hay
+  # que repetirlas en cada pagina.
 
-    label:
-      text_color: 0xE2E8F0
-      text_font: font_small
+  top_layer:
+    id: capa_global
+    width: 480
+    height: 480
+    pad_all: 0
+    bg_opa: 0%
+    widgets:
+
+      # ---- Barra superior: reloj + fecha ----
+      - obj:
+          id: barra_top
+          x: 0
+          y: 0
+          width: 480
+          height: 54
+          bg_color: c_surface
+          bg_opa: cover
+          radius: 0
+          pad_all: 0
+          border_width: 0
+          widgets:
+            - label:
+                id: lbl_hora
+                x: 16
+                y: 11
+                text_font: font_l
+                text_color: c_text
+                text: "00:00"
+            - label:
+                id: lbl_fecha
+                align: RIGHT_MID
+                x: -16
+                y: 0
+                text_font: font_s
+                text_color: c_text_dim
+                text: "--/--/----"
+
+      # ---- Barra de navegacion ----
+      - obj:
+          id: barra_nav
+          x: 0
+          y: 414
+          width: 480
+          height: 66
+          bg_color: c_surface
+          bg_opa: cover
+          radius: 0
+          pad_all: 0
+          border_width: 0
+          widgets:
+            - button:
+                id: nav_1
+                x: 12
+                y: 8
+                width: 145
+                height: 48
+                radius: 14
+                border_width: 0
+                bg_color: c_surface_hi
+                widgets:
+                  - label:
+                      id: nav_1_txt
+                      align: CENTER
+                      text_font: font_xs
+                      text_color: c_muted
+                      text: "INICIO"
+                  - obj:
+                      id: nav_1_bar
+                      align: TOP_MID
+                      y: 0
+                      width: 26
+                      height: 3
+                      radius: 2
+                      bg_color: c_accent
+                      bg_opa: 0%
+                      pad_all: 0
+                      border_width: 0
+                on_click:
+                  - script.execute: ir_1
+
+            - button:
+                id: nav_2
+                x: 168
+                y: 8
+                width: 145
+                height: 48
+                radius: 14
+                border_width: 0
+                bg_color: c_surface_hi
+                widgets:
+                  - label:
+                      id: nav_2_txt
+                      align: CENTER
+                      text_font: font_xs
+                      text_color: c_muted
+                      text: "DORMITORIO"
+                  - obj:
+                      id: nav_2_bar
+                      align: TOP_MID
+                      y: 0
+                      width: 26
+                      height: 3
+                      radius: 2
+                      bg_color: c_accent
+                      bg_opa: 0%
+                      pad_all: 0
+                      border_width: 0
+                on_click:
+                  - script.execute: ir_2
+
+            - button:
+                id: nav_3
+                x: 323
+                y: 8
+                width: 145
+                height: 48
+                radius: 14
+                border_width: 0
+                bg_color: c_surface_hi
+                widgets:
+                  - label:
+                      id: nav_3_txt
+                      align: CENTER
+                      text_font: font_xs
+                      text_color: c_muted
+                      text: "AIRE"
+                  - obj:
+                      id: nav_3_bar
+                      align: TOP_MID
+                      y: 0
+                      width: 26
+                      height: 3
+                      radius: 2
+                      bg_color: c_accent
+                      bg_opa: 0%
+                      pad_all: 0
+                      border_width: 0
+                on_click:
+                  - script.execute: ir_3
+
+  # ------------------------------------------------------------
+  # PAGINAS
+  # ------------------------------------------------------------
 
   pages:
 
     # ========================================================
-    # PÁGINA PRINCIPAL
+    # PAGINA 1 - INICIO
     # ========================================================
 
-    - id: pagina_principal
-      bg_color: 0x0F172A
+    - id: pagina_inicio
+      bg_color: c_bg
       bg_opa: cover
+      on_load:
+        - script.execute:
+            id: nav_set
+            activo: 1
+        - script.execute: refrescar_toggles
       widgets:
 
-        # ----------------------------------------------------
-        # BARRA SUPERIOR
-        # ----------------------------------------------------
-
-        - container:
-            id: barra_superior
-            x: 0
-            y: 0
-            width: 480
-            height: 50
-            bg_color: 0x1E293B
-            bg_opa: 100%
-            radius: 0
+        # ---- Fila 1: Casa (3 tarjetas) ----
+        - obj:
+            id: card_temp_casa
+            x: 12
+            y: 60
+            width: 145
+            height: 100
+            bg_color: c_surface
+            radius: 16
             pad_all: 0
+            border_width: 0
             widgets:
               - label:
-                  id: hora_actual
-                  text_font: font_medium
-                  x: 20
-                  y: 15
-                  text: "00:00"
-                  text_color: 0xE2E8F0
+                  x: 12
+                  y: 10
+                  text_font: font_xs
+                  text_color: c_text_dim
+                  text: "TEMP CASA"
               - label:
-                  id: fecha_actual
-                  text_font: font_medium
-                  x: 300
-                  y: 15
-                  text: "--/--/----"
-                  text_color: 0x94A3B8
+                  id: lbl_temp_casa
+                  x: 12
+                  y: 28
+                  text_font: font_l
+                  text_color: c_text
+                  text: "--.-°C"
+              - bar:
+                  id: bar_temp_casa
+                  x: 12
+                  y: 78
+                  width: 121
+                  height: 6
+                  min_value: 0
+                  max_value: 100
+                  value: 50
+                  radius: 3
+                  bg_color: c_line
+                  bg_opa: cover
+                  indicator:
+                    bg_color: c_ok
+                    radius: 3
 
-        # ----------------------------------------------------
-        # FILA 1: Tarjetas principales
-        # ----------------------------------------------------
-
-        # Tarjeta Temperatura General
-        - container:
-            x: 10
+        - obj:
+            id: card_hum_casa
+            x: 168
             y: 60
-            width: 150
+            width: 145
             height: 100
-            bg_color: 0x1E293B
-            bg_opa: 100%
-            radius: 15
-            pad_all: 10
+            bg_color: c_surface
+            radius: 16
+            pad_all: 0
+            border_width: 0
             widgets:
               - label:
-                  x: 10
-                  y: 5
-                  text: "TEMP"
-                  text_color: 0x94A3B8
-              - label:
-                  id: main_valor_temperatura_general
-                  text_font: font_large
-                  x: 10
-                  y: 30
-                  text: "--.- C"
-                  text_color: 0xE2E8F0
-
-        # Tarjeta Humedad General
-        - container:
-            x: 170
-            y: 60
-            width: 150
-            height: 100
-            bg_color: 0x1E293B
-            bg_opa: 100%
-            radius: 15
-            pad_all: 10
-            widgets:
-              - label:
-                  x: 10
-                  y: 5
+                  x: 12
+                  y: 10
+                  text_font: font_xs
+                  text_color: c_text_dim
                   text: "HUMEDAD"
-                  text_color: 0x94A3B8
               - label:
-                  id: main_valor_humedad_general
-                  text_font: font_large
-                  x: 10
-                  y: 30
-                  text: "-- %"
-                  text_color: 0xE2E8F0
+                  id: lbl_hum_casa
+                  x: 12
+                  y: 28
+                  text_font: font_l
+                  text_color: c_text
+                  text: "--%"
+              - label:
+                  x: 12
+                  y: 70
+                  text_font: font_xs
+                  text_color: c_muted
+                  text: "MEDIA CASA"
 
-        # Tarjeta Iluminación
-        - container:
-            x: 330
+        - obj:
+            id: card_clima
+            x: 323
             y: 60
-            width: 150
+            width: 145
             height: 100
-            bg_color: 0x1E293B
-            bg_opa: 100%
-            radius: 15
-            pad_all: 10
+            bg_color: c_surface
+            radius: 16
+            pad_all: 0
+            border_width: 0
             widgets:
               - label:
-                  x: 10
-                  y: 5
-                  text: "LUZ"
-                  text_color: 0x94A3B8
+                  x: 12
+                  y: 10
+                  text_font: font_xs
+                  text_color: c_text_dim
+                  text: "EXTERIOR"
               - label:
-                  id: main_valor_iluminacion_salon
-                  text_font: font_large
-                  x: 10
+                  id: lbl_temp_ext
+                  x: 12
+                  y: 28
+                  text_font: font_l
+                  text_color: c_text
+                  text: "--°C"
+              - label:
+                  id: lbl_clima_estado
+                  x: 12
+                  y: 70
+                  text_font: font_xs
+                  text_color: c_muted
+                  long_mode: DOT
+                  width: 121
+                  text: "SIN DATOS"
+
+        # ---- Fila 2: Salon y Dormitorio ----
+        - obj:
+            id: card_salon
+            x: 12
+            y: 170
+            width: 222
+            height: 96
+            bg_color: c_surface
+            radius: 16
+            pad_all: 0
+            border_width: 0
+            widgets:
+              - label:
+                  x: 12
+                  y: 10
+                  text_font: font_xs
+                  text_color: c_text_dim
+                  text: "SALON"
+              - label:
+                  id: lbl_temp_salon
+                  x: 12
                   y: 30
-                  text: "--- lx"
-                  text_color: 0xE2E8F0
+                  text_font: font_m
+                  text_color: c_text
+                  text: "--.-°C"
+              - label:
+                  id: lbl_hum_salon
+                  x: 120
+                  y: 30
+                  text_font: font_m
+                  text_color: c_text
+                  text: "--%"
+              - label:
+                  x: 12
+                  y: 62
+                  text_font: font_xs
+                  text_color: c_muted
+                  text: "TEMP"
+              - label:
+                  x: 120
+                  y: 62
+                  text_font: font_xs
+                  text_color: c_muted
+                  text: "HUM"
 
-        # ----------------------------------------------------
-        # FILA 2: Salón y Dormitorio
-        # ----------------------------------------------------
-
-        # Tarjeta Salón
-        - container:
-            x: 10
+        - obj:
+            id: card_dormitorio
+            x: 246
             y: 170
-            width: 230
-            height: 120
-            bg_color: 0x1E293B
-            bg_opa: 100%
-            radius: 15
-            pad_all: 10
+            width: 222
+            height: 96
+            bg_color: c_surface
+            radius: 16
+            pad_all: 0
+            border_width: 0
             widgets:
               - label:
-                  x: 10
-                  y: 5
-                  text: "Salon"
-                  text_color: 0xE2E8F0
+                  x: 12
+                  y: 10
+                  text_font: font_xs
+                  text_color: c_text_dim
+                  text: "DORMITORIO"
               - label:
-                  x: 10
-                  y: 35
-                  text: "Temperatura"
-                  text_color: 0x94A3B8
+                  id: lbl_temp_dormitorio
+                  x: 12
+                  y: 30
+                  text_font: font_m
+                  text_color: c_text
+                  text: "--.-°C"
               - label:
-                  id: main_valor_temperatura_salon
-                  text_font: font_large
-                  x: 10
-                  y: 55
-                  text: "--.- C"
-                  text_color: 0xE2E8F0
+                  id: lbl_hum_dormitorio
+                  x: 120
+                  y: 30
+                  text_font: font_m
+                  text_color: c_text
+                  text: "--%"
+              - label:
+                  x: 12
+                  y: 62
+                  text_font: font_xs
+                  text_color: c_muted
+                  text: "TEMP"
               - label:
                   x: 120
-                  y: 35
-                  text: "Humedad"
-                  text_color: 0x94A3B8
-              - label:
-                  id: main_valor_humedad_salon
-                  text_font: font_large
-                  x: 120
-                  y: 55
-                  text: "-- %"
-                  text_color: 0xE2E8F0
+                  y: 62
+                  text_font: font_xs
+                  text_color: c_muted
+                  text: "HUM"
 
-        # Tarjeta Dormitorio
-        - container:
-            x: 250
-            y: 170
-            width: 230
-            height: 120
-            bg_color: 0x1E293B
-            bg_opa: 100%
-            radius: 15
-            pad_all: 10
+        # ---- Fila 3: Chips de estado ----
+        - obj:
+            id: chip_presencia
+            x: 12
+            y: 276
+            width: 108
+            height: 58
+            bg_color: c_surface
+            radius: 14
+            pad_all: 0
+            border_width: 0
             widgets:
               - label:
-                  x: 10
-                  y: 5
-                  text: "Dormitorio"
-                  text_color: 0xE2E8F0
-              - label:
-                  x: 10
-                  y: 35
-                  text: "Temperatura"
-                  text_color: 0x94A3B8
-              - label:
-                  id: main_valor_temperatura_dormitorio
-                  text_font: font_large
-                  x: 10
-                  y: 55
-                  text: "--.- C"
-                  text_color: 0xE2E8F0
-              - label:
-                  x: 120
-                  y: 35
-                  text: "Humedad"
-                  text_color: 0x94A3B8
-              - label:
-                  id: main_valor_humedad_dormitorio
-                  text_font: font_large
-                  x: 120
-                  y: 55
-                  text: "-- %"
-                  text_color: 0xE2E8F0
-
-        # ----------------------------------------------------
-        # FILA 3: Presencia, Ventanas, Aire
-        # ----------------------------------------------------
-
-        # Tarjeta Presencia
-        - container:
-            x: 10
-            y: 300
-            width: 150
-            height: 80
-            bg_color: 0x1E293B
-            bg_opa: 100%
-            radius: 15
-            pad_all: 10
-            widgets:
-              - label:
-                  x: 10
-                  y: 5
+                  x: 0
+                  y: 8
+                  width: 108
+                  text_align: CENTER
+                  text_font: font_xs
+                  text_color: c_muted
+                  long_mode: DOT
                   text: "PRESENCIA"
-                  text_color: 0x94A3B8
               - label:
-                  id: main_estado_presencia
-                  text_font: font_medium
-                  x: 10
+                  id: lbl_chip_presencia
+                  x: 0
+                  y: 28
+                  width: 108
+                  text_align: CENTER
+                  text_font: font_s
+                  text_color: c_muted
+                  text: "--"
+
+        - obj:
+            id: chip_movimiento
+            x: 128
+            y: 276
+            width: 108
+            height: 58
+            bg_color: c_surface
+            radius: 14
+            pad_all: 0
+            border_width: 0
+            widgets:
+              - label:
+                  x: 0
+                  y: 8
+                  width: 108
+                  text_align: CENTER
+                  text_font: font_xs
+                  text_color: c_muted
+                  long_mode: DOT
+                  text: "MOVIMIENTO"
+              - label:
+                  id: lbl_chip_movimiento
+                  x: 0
+                  y: 28
+                  width: 108
+                  text_align: CENTER
+                  text_font: font_s
+                  text_color: c_muted
+                  text: "--"
+
+        - obj:
+            id: chip_puerta
+            x: 244
+            y: 276
+            width: 108
+            height: 58
+            bg_color: c_surface
+            radius: 14
+            pad_all: 0
+            border_width: 0
+            widgets:
+              - label:
+                  x: 0
+                  y: 8
+                  width: 108
+                  text_align: CENTER
+                  text_font: font_xs
+                  text_color: c_muted
+                  long_mode: DOT
+                  text: "PUERTA"
+              - label:
+                  id: lbl_chip_puerta
+                  x: 0
+                  y: 28
+                  width: 108
+                  text_align: CENTER
+                  text_font: font_s
+                  text_color: c_muted
+                  text: "--"
+
+        - obj:
+            id: chip_ventana
+            x: 360
+            y: 276
+            width: 108
+            height: 58
+            bg_color: c_surface
+            radius: 14
+            pad_all: 0
+            border_width: 0
+            widgets:
+              - label:
+                  x: 0
+                  y: 8
+                  width: 108
+                  text_align: CENTER
+                  text_font: font_xs
+                  text_color: c_muted
+                  long_mode: DOT
+                  text: "VENTANA"
+              - label:
+                  id: lbl_chip_ventana
+                  x: 0
+                  y: 28
+                  width: 108
+                  text_align: CENTER
+                  text_font: font_s
+                  text_color: c_muted
+                  text: "--"
+
+        # ---- Fila 4: Botones toggle ----
+        - button:
+            id: btn_luz_salon
+            x: 12
+            y: 344
+            width: 145
+            height: 64
+            radius: 16
+            border_width: 0
+            bg_color: c_surface_hi
+            widgets:
+              - label:
+                  x: 0
+                  y: 10
+                  width: 145
+                  text_align: CENTER
+                  text_font: font_xs
+                  text_color: c_muted
+                  text: "LUZ SALON"
+              - label:
+                  id: lbl_luz_salon_txt
+                  x: 0
                   y: 30
-                  text: "SIN DATOS"
-                  text_color: 0x94A3B8
-              - label:
-                  id: main_estado_movimiento
-                  text_font: font_medium
-                  x: 10
-                  y: 52
-                  text: "SIN DATOS"
-                  text_color: 0x94A3B8
-
-        # Tarjeta Ventanas
-        - container:
-            x: 170
-            y: 300
-            width: 150
-            height: 80
-            bg_color: 0x1E293B
-            bg_opa: 100%
-            radius: 15
-            pad_all: 10
-            widgets:
-              - label:
-                  x: 10
-                  y: 5
-                  text: "VENTANAS"
-                  text_color: 0x94A3B8
-              - label:
-                  x: 10
-                  y: 25
-                  text: "Salon:"
-                  text_color: 0x94A3B8
-              - label:
-                  id: main_estado_ventana_salon
-                  text_font: font_medium
-                  x: 60
-                  y: 25
-                  text: "--"
-                  text_color: 0xE2E8F0
-              - label:
-                  x: 10
-                  y: 45
-                  text: "Dorm:"
-                  text_color: 0x94A3B8
-              - label:
-                  id: main_estado_ventana_dormitorio
-                  text_font: font_medium
-                  x: 60
-                  y: 45
-                  text: "--"
-                  text_color: 0xE2E8F0
-
-        # Tarjeta Aire
-        - container:
-            x: 330
-            y: 300
-            width: 150
-            height: 80
-            bg_color: 0x1E293B
-            bg_opa: 100%
-            radius: 15
-            pad_all: 10
-            widgets:
-              - label:
-                  x: 10
-                  y: 5
-                  text: "AIRE"
-                  text_color: 0x94A3B8
-              - label:
-                  id: main_valor_temperatura_aire
-                  text_font: font_large
-                  x: 10
-                  y: 25
-                  text: "--.- C"
-                  text_color: 0xE2E8F0
-              - label:
-                  id: main_valor_humedad_aire
-                  text_font: font_large
-                  x: 10
-                  y: 45
-                  text: "-- %"
-                  text_color: 0x94A3B8
-
-        # ----------------------------------------------------
-        # FILA 4: Botones de control
-        # ----------------------------------------------------
+                  width: 145
+                  text_align: CENTER
+                  text_font: font_m
+                  text_color: c_muted
+                  text: "OFF"
+            on_click:
+              - switch.toggle: sw_luz_salon
 
         - button:
-            id: boton_luz_salon
-            x: 10
-            y: 390
-            width: 150
-            height: 80
-            bg_color: 0x1E293B
-            bg_opa: 100%
-            radius: 15
+            id: btn_luz_habitacion
+            x: 168
+            y: 344
+            width: 145
+            height: 64
+            radius: 16
+            border_width: 0
+            bg_color: c_surface_hi
             widgets:
               - label:
                   x: 0
-                  y: 0
-                  align: CENTER
-                  text: "Luz Salon"
-                  text_color: 0xE2E8F0
-            on_click:
-              - homeassistant.action:
-                  action: light.toggle
-                  data:
-                    entity_id: light.bombilla_salon
-
-        - button:
-            id: boton_luz_habitacion
-            x: 170
-            y: 390
-            width: 150
-            height: 80
-            bg_color: 0x1E293B
-            bg_opa: 100%
-            radius: 15
-            widgets:
-              - label:
-                  x: 0
-                  y: 0
-                  align: CENTER
-                  text: "Habitacion"
-                  text_color: 0xE2E8F0
-            on_click:
-              - homeassistant.action:
-                  action: light.toggle
-                  data:
-                    entity_id: light.bombilla_habitacion
-
-        - button:
-            id: boton_ventanas
-            x: 330
-            y: 390
-            width: 150
-            height: 80
-            bg_color: 0x1E293B
-            bg_opa: 100%
-            radius: 15
-            widgets:
-              - label:
-                  x: 0
-                  y: 0
-                  align: CENTER
-                  text: "ENCHUFE"
-                  text_color: 0xE2E8F0
-            on_click:
-              - homeassistant.action:
-                  action: switch.toggle
-                  data:
-                    entity_id: switch.enchufe_chino_1
-
-    # ========================================================
-    # PÁGINA DE DETALLES - SALÓN
-    # ========================================================
-
-    - id: pagina_salon
-      bg_color: 0x0F172A
-      bg_opa: cover
-      widgets:
-        # Botón de vuelta
-        - button:
-            id: boton_volver_salon
-            x: 10
-            y: 10
-            width: 100
-            height: 50
-            bg_color: 0x1E293B
-            bg_opa: 100%
-            radius: 10
-            widgets:
-              - label:
-                  x: 0
-                  y: 0
-                  align: CENTER
-                  text: "VOLVER"
-                  text_color: 0xE2E8F0
-            on_click:
-              - lvgl.page.show: pagina_principal
-
-        - label:
-            x: 130
-            y: 20
-            text: "Detalles - Salon"
-            text_color: 0xE2E8F0
-
-        # Temperatura grande
-        - container:
-            x: 20
-            y: 80
-            width: 440
-            height: 120
-            bg_color: 0x1E293B
-            bg_opa: 100%
-            radius: 15
-            pad_all: 20
-            widgets:
-              - label:
-                  x: 20
-                  y: 20
-                  text: "Temperatura"
-                  text_color: 0x94A3B8
-              - label:
-                  id: detail_valor_temperatura_salon
-                  text_font: font_large
-                  x: 20
-                  y: 60
-                  text: "--.- C"
-                  text_color: 0xE2E8F0
-
-        # Humedad grande
-        - container:
-            x: 20
-            y: 220
-            width: 210
-            height: 100
-            bg_color: 0x1E293B
-            bg_opa: 100%
-            radius: 15
-            pad_all: 15
-            widgets:
-              - label:
-                  x: 10
                   y: 10
-                  text: "Humedad"
-                  text_color: 0x94A3B8
+                  width: 145
+                  text_align: CENTER
+                  text_font: font_xs
+                  text_color: c_muted
+                  text: "LUZ HABITACION"
               - label:
-                  id: detail_valor_humedad_salon
-                  text_font: font_large
-                  x: 10
-                  y: 45
-                  text: "-- %"
-                  text_color: 0xE2E8F0
+                  id: lbl_luz_habitacion_txt
+                  x: 0
+                  y: 30
+                  width: 145
+                  text_align: CENTER
+                  text_font: font_m
+                  text_color: c_muted
+                  text: "OFF"
+            on_click:
+              - switch.toggle: sw_luz_habitacion
 
-        # Iluminación
-        - container:
-            x: 240
-            y: 220
-            width: 210
-            height: 100
-            bg_color: 0x1E293B
-            bg_opa: 100%
-            radius: 15
-            pad_all: 15
-            widgets:
-              - label:
-                  x: 10
-                  y: 10
-                  text: "Iluminacion"
-                  text_color: 0x94A3B8
-              - label:
-                  id: detail_valor_iluminacion_salon
-                  text_font: font_large
-                  x: 10
-                  y: 45
-                  text: "--- lx"
-                  text_color: 0xE2E8F0
-
-        # Botón de luz
         - button:
-            id: boton_luz_salon_detalle
-            x: 20
-            y: 340
-            width: 440
-            height: 80
-            bg_color: 0x1E293B
-            bg_opa: 100%
-            radius: 15
+            id: btn_enchufe
+            x: 323
+            y: 344
+            width: 145
+            height: 64
+            radius: 16
+            border_width: 0
+            bg_color: c_surface_hi
             widgets:
               - label:
                   x: 0
-                  y: 0
-                  align: CENTER
-                  text: "Luz Salon"
-                  text_color: 0xE2E8F0
+                  y: 10
+                  width: 145
+                  text_align: CENTER
+                  text_font: font_xs
+                  text_color: c_muted
+                  long_mode: DOT
+                  text: "ENCHUFE CHINO"
+              - label:
+                  id: lbl_enchufe_txt
+                  x: 0
+                  y: 30
+                  width: 145
+                  text_align: CENTER
+                  text_font: font_m
+                  text_color: c_muted
+                  text: "OFF"
             on_click:
-              - homeassistant.action:
-                  action: light.toggle
-                  data:
-                    entity_id: light.bombilla_salon
+              - switch.toggle: sw_enchufe
 
     # ========================================================
-    # PÁGINA DE DETALLES - DORMITORIO
+    # PAGINA 2 - DORMITORIO
     # ========================================================
 
     - id: pagina_dormitorio
-      bg_color: 0x0F172A
+      bg_color: c_bg
       bg_opa: cover
+      on_load:
+        - script.execute:
+            id: nav_set
+            activo: 2
       widgets:
-        # Botón de vuelta
-        - button:
-            id: boton_volver_dormitorio
-            x: 10
-            y: 10
-            width: 100
-            height: 50
-            bg_color: 0x1E293B
-            bg_opa: 100%
-            radius: 10
-            widgets:
-              - label:
-                  x: 0
-                  y: 0
-                  align: CENTER
-                  text: "VOLVER"
-                  text_color: 0xE2E8F0
-            on_click:
-              - lvgl.page.show: pagina_principal
 
         - label:
-            x: 130
-            y: 20
-            text: "Detalles - Dormitorio"
-            text_color: 0xE2E8F0
+            x: 12
+            y: 62
+            text_font: font_m
+            text_color: c_text
+            text: "DORMITORIO"
 
-        # Temperatura grande
-        - container:
-            x: 20
-            y: 80
-            width: 440
-            height: 120
-            bg_color: 0x1E293B
-            bg_opa: 100%
-            radius: 15
-            pad_all: 20
+        # ---- Hero: temperatura ----
+        - obj:
+            id: card_temp_hero
+            x: 12
+            y: 92
+            width: 456
+            height: 104
+            bg_color: c_surface
+            radius: 18
+            pad_all: 0
+            border_width: 0
             widgets:
               - label:
-                  x: 20
-                  y: 20
-                  text: "Temperatura"
-                  text_color: 0x94A3B8
+                  x: 16
+                  y: 12
+                  text_font: font_xs
+                  text_color: c_text_dim
+                  text: "TEMPERATURA"
               - label:
-                  id: detail_valor_temperatura_dormitorio
-                  text_font: font_large
-                  x: 20
-                  y: 60
-                  text: "--.- C"
-                  text_color: 0xE2E8F0
+                  id: lbl_temp_dormitorio_hero
+                  x: 16
+                  y: 34
+                  text_font: font_xl
+                  text_color: c_text
+                  text: "--.-°C"
+              - bar:
+                  id: bar_temp_dormitorio
+                  x: 356
+                  y: 24
+                  width: 84
+                  height: 8
+                  min_value: 0
+                  max_value: 100
+                  value: 50
+                  radius: 4
+                  bg_color: c_line
+                  bg_opa: cover
+                  indicator:
+                    bg_color: c_ok
+                    radius: 4
+              - label:
+                  x: 356
+                  y: 42
+                  text_font: font_xs
+                  text_color: c_muted
+                  text: "15°"
+              - label:
+                  x: 404
+                  y: 42
+                  text_font: font_xs
+                  text_color: c_muted
+                  text: "35°"
 
-        # Humedad grande
-        - container:
-            x: 20
-            y: 220
-            width: 210
-            height: 100
-            bg_color: 0x1E293B
-            bg_opa: 100%
-            radius: 15
-            pad_all: 15
+        # ---- Humedad y bateria ----
+        - obj:
+            id: card_hum_dorm
+            x: 12
+            y: 204
+            width: 222
+            height: 82
+            bg_color: c_surface
+            radius: 16
+            pad_all: 0
+            border_width: 0
             widgets:
               - label:
-                  x: 10
+                  x: 12
                   y: 10
-                  text: "Humedad"
-                  text_color: 0x94A3B8
+                  text_font: font_xs
+                  text_color: c_text_dim
+                  text: "HUMEDAD"
               - label:
-                  id: detail_valor_humedad_dormitorio
-                  text_font: font_large
-                  x: 10
-                  y: 45
-                  text: "-- %"
-                  text_color: 0xE2E8F0
+                  id: lbl_hum_dormitorio_hero
+                  x: 12
+                  y: 32
+                  text_font: font_m
+                  text_color: c_text
+                  text: "--%"
 
-        # Botón de luz
-        - button:
-            id: boton_luz_dormitorio_detalle
-            x: 20
-            y: 340
-            width: 440
-            height: 80
-            bg_color: 0x1E293B
-            bg_opa: 100%
-            radius: 15
+        - obj:
+            id: card_bateria_dorm
+            x: 246
+            y: 204
+            width: 222
+            height: 82
+            bg_color: c_surface
+            radius: 16
+            pad_all: 0
+            border_width: 0
             widgets:
               - label:
-                  x: 0
+                  x: 12
+                  y: 10
+                  text_font: font_xs
+                  text_color: c_text_dim
+                  text: "BATERIA SENSOR"
+              - label:
+                  id: lbl_bateria_dormitorio
+                  x: 12
+                  y: 32
+                  text_font: font_m
+                  text_color: c_text
+                  text: "--%"
+              - bar:
+                  id: bar_bateria_dormitorio
+                  x: 12
+                  y: 64
+                  width: 198
+                  height: 6
+                  min_value: 0
+                  max_value: 100
+                  value: 0
+                  radius: 3
+                  bg_color: c_line
+                  bg_opa: cover
+                  indicator:
+                    bg_color: c_ok
+                    radius: 3
+
+        # ---- Ventana ----
+        - obj:
+            id: card_ventana_dorm
+            x: 12
+            y: 296
+            width: 456
+            height: 52
+            bg_color: c_surface
+            radius: 14
+            pad_all: 0
+            border_width: 0
+            widgets:
+              - label:
+                  x: 14
+                  y: 16
+                  text_font: font_xs
+                  text_color: c_text_dim
+                  text: "VENTANA"
+              - label:
+                  id: lbl_ventana_dormitorio
+                  align: RIGHT_MID
+                  x: -14
                   y: 0
-                  align: CENTER
-                  text: "Luz Habitacion"
-                  text_color: 0xE2E8F0
+                  text_font: font_s
+                  text_color: c_muted
+                  text: "--"
+
+        # ---- Boton luz habitacion ----
+        - button:
+            id: btn_luz_dorm_det
+            x: 12
+            y: 356
+            width: 456
+            height: 52
+            radius: 16
+            border_width: 0
+            bg_color: c_surface_hi
+            widgets:
+              - label:
+                  x: 16
+                  y: 16
+                  text_font: font_s
+                  text_color: c_muted
+                  text: "LUZ HABITACION"
+              - label:
+                  id: lbl_luz_dorm_det_txt
+                  align: RIGHT_MID
+                  x: -16
+                  y: 0
+                  text_font: font_s
+                  text_color: c_muted
+                  text: "OFF"
             on_click:
-              - homeassistant.action:
-                  action: light.toggle
-                  data:
-                    entity_id: light.bombilla_habitacion
+              - switch.toggle: sw_luz_habitacion
 
-# ============================================================
-# NAVEGACIÓN ENTRE PÁGINAS
-# ============================================================
-# Llamar estos scripts desde automatizaciones, botones o triggers
-# de gestos cuando sea necesario.
+    # ========================================================
+    # PAGINA 3 - AIRE
+    # ========================================================
 
-script:
-  - id: pagina_siguiente
-    then:
-      - lvgl.page.next:
+    - id: pagina_aire
+      bg_color: c_bg
+      bg_opa: cover
+      on_load:
+        - script.execute:
+            id: nav_set
+            activo: 3
+      widgets:
 
-  - id: pagina_anterior
-    then:
-      - lvgl.page.previous:
+        - label:
+            x: 12
+            y: 62
+            text_font: font_m
+            text_color: c_text
+            text: "CALIDAD DE AIRE"
+
+        # ---- Arco de CO2 ----
+        - arc:
+            id: arco_co2
+            x: 140
+            y: 84
+            width: 200
+            height: 200
+            min_value: 400
+            max_value: 1600
+            value: 400
+            rotation: 135
+            length: 270
+            arc_width: 16
+            arc_color: c_line
+            bg_color: c_bg
+            bg_opa: 0%
+            pad_all: 0
+            border_width: 0
+            indicator:
+              arc_color: c_ok
+              width: 16
+            widgets:
+              - label:
+                  id: lbl_co2
+                  align: CENTER
+                  y: -12
+                  text_font: font_xl
+                  text_color: c_text
+                  text: "--"
+              - label:
+                  align: CENTER
+                  y: 30
+                  text_font: font_xs
+                  text_color: c_muted
+                  text: "PPM CO2"
+              - label:
+                  id: lbl_co2_estado
+                  align: CENTER
+                  y: 46
+                  text_font: font_xs
+                  text_color: c_ok
+                  text: "--"
+
+        # ---- COV y formaldehido ----
+        - obj:
+            id: card_cov
+            x: 12
+            y: 292
+            width: 222
+            height: 54
+            bg_color: c_surface
+            radius: 14
+            pad_all: 0
+            border_width: 0
+            widgets:
+              - label:
+                  x: 12
+                  y: 8
+                  text_font: font_xs
+                  text_color: c_text_dim
+                  text: "COV"
+              - label:
+                  id: lbl_cov
+                  align: RIGHT_MID
+                  x: -12
+                  y: 0
+                  text_font: font_s
+                  text_color: c_text
+                  text: "--"
+
+        - obj:
+            id: card_formaldehido
+            x: 246
+            y: 292
+            width: 222
+            height: 54
+            bg_color: c_surface
+            radius: 14
+            pad_all: 0
+            border_width: 0
+            widgets:
+              - label:
+                  x: 12
+                  y: 8
+                  text_font: font_xs
+                  text_color: c_text_dim
+                  text: "FORMALDEHIDO"
+              - label:
+                  id: lbl_formaldehido
+                  align: RIGHT_MID
+                  x: -12
+                  y: 0
+                  text_font: font_s
+                  text_color: c_text
+                  text: "--"
+
+        # ---- Temperatura y humedad ----
+        - obj:
+            id: card_temp_aire
+            x: 12
+            y: 354
+            width: 222
+            height: 54
+            bg_color: c_surface
+            radius: 14
+            pad_all: 0
+            border_width: 0
+            widgets:
+              - label:
+                  x: 12
+                  y: 8
+                  text_font: font_xs
+                  text_color: c_text_dim
+                  text: "TEMP"
+              - label:
+                  id: lbl_temp_aire
+                  align: RIGHT_MID
+                  x: -12
+                  y: 0
+                  text_font: font_s
+                  text_color: c_text
+                  text: "--"
+
+        - obj:
+            id: card_hum_aire
+            x: 246
+            y: 354
+            width: 222
+            height: 54
+            bg_color: c_surface
+            radius: 14
+            pad_all: 0
+            border_width: 0
+            widgets:
+              - label:
+                  x: 12
+                  y: 8
+                  text_font: font_xs
+                  text_color: c_text_dim
+                  text: "HUMEDAD"
+              - label:
+                  id: lbl_hum_aire
+                  align: RIGHT_MID
+                  x: -12
+                  y: 0
+                  text_font: font_s
+                  text_color: c_text
+                  text: "--"
