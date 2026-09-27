@@ -48,6 +48,22 @@ output:
     zero_means_zero: true
 
 light:
+  # La propia luz del panel. `name` la publica en HA como
+  # `light.backlight`, asi que desde la app se puede apagar de
+  # verdad; el boton de la pantalla NO hace on/off, alterna entre
+  # brillo alto y modo noche (ver script `alternar_brillo`).
+  #
+  # Motivo: si la pantalla queda a 0 no hay nada que pulsar, y
+  # apagarla solo se podria revertir desde el movil. Con el modo
+  # noche al 20% el panel sigue siendo operable y siempre se
+  # puede volver al 100% tocandolo.
+  #
+  # DELIBERADAMENTE sin `on_state`: `restore_mode: ALWAYS_ON`
+  # publica el estado durante el arranque, y `lvgl:` esta mas
+  # abajo en el fichero, asi que un `on_state` intentaria
+  # actualizar widgets que todavia no existen. La etiqueta se
+  # refresca en su lugar desde `refrescar_toggles`, que corre en
+  # el `on_load` de INICIO (ver nota en ese script).
   - platform: monochromatic
     name: "Backlight"
     id: display_backlight
@@ -259,6 +275,13 @@ globals:
     type: int
     restore_value: no
     initial_value: '0'
+
+  # Porcentaje de brillo que la pantalla intenta mantener.
+  # La luz se lee al entrar en INICIO (script `sincronizar_brillo`).
+  - id: brillo_pct
+    type: int
+    restore_value: no
+    initial_value: '100'
 
 # ============================================================
 # SENSORES DE HOME ASSISTANT
@@ -671,6 +694,68 @@ script:
       - lvgl.label.update: {id: nav_5_txt, text_color: c_muted}
       - lvgl.widget.update: {id: nav_5_bar, bg_opa: 0%}
 
+  # ----------------------------------------------------------
+  # BRILLO DE LA PANTALLA
+  # ----------------------------------------------------------
+  # El boton no hace on/off: alterna entre brillo alto (100%) y
+  # modo noche (20%). Un on/off real dejaria el panel en negro y
+  # sin nada que pulsar, y solo se podria recuperar desde el movil.
+  # El apagado real sigue disponible como `light.backlight` en HA.
+  #
+  # El nivel se guarda en el global `brillo_pct` y la etiqueta se
+  # pinta con ESE valor, no con el estado real de la luz. Asi el
+  # boton responde en el instante en que se pulsa, sin esperar a
+  # los 700 ms de la transicion (que si no hacia que la etiqueta
+  # se relea todavia al 100% y pareciera que no pasa nada).
+  - id: refrescar_brillo
+    then:
+      - if:
+          condition:
+            lambda: return id(brillo_pct) <= 0;
+          then:
+            - lvgl.widget.update: {id: btn_brillo, bg_color: c_surface_hi}
+            - lvgl.label.update:
+                id: lbl_brillo_txt
+                text_color: c_muted
+                text: "OFF"
+          else:
+            - lvgl.widget.update: {id: btn_brillo, bg_color: c_accent_soft}
+            - lvgl.label.update:
+                id: lbl_brillo_txt
+                text_color: c_accent
+                text: !lambda |-
+                  char b[8];
+                  snprintf(b, sizeof(b), "%d%%", id(brillo_pct));
+                  return b;
+
+  - id: alternar_brillo
+    then:
+      - if:
+          condition:
+            lambda: return id(brillo_pct) > 50;
+          then:
+            - lambda: id(brillo_pct) = 20;
+            - light.turn_on:
+                id: display_backlight
+                brightness: 20%
+                transition_length: 700ms
+          else:
+            - lambda: id(brillo_pct) = 100;
+            - light.turn_on:
+                id: display_backlight
+                brightness: 100%
+                transition_length: 700ms
+      - script.execute: refrescar_brillo
+
+  # El brillo se puede cambiar tambien desde la app (HA), asi que
+  # al entrar en INICIO se lee el valor real de la luz y se adopta.
+  - id: sincronizar_brillo
+    then:
+      - lambda: |-
+          const float b = id(display_backlight).remote_values.get_brightness();
+          id(brillo_pct) = (int) (b * 100.0f + 0.5f);
+      - script.execute: refrescar_brillo
+
   - id: nav_set
     parameters:
       activo: int
@@ -813,6 +898,13 @@ script:
   # Refresca los toggles al entrar en Inicio.
   # Necesario porque un `light` puede volver de `unavailable`
   # sin disparar `on_state` en el ESPHome.
+  #
+  # Aqui termina tambien `refrescar_brillo`. Es el unico sitio
+  # que refresca el boton de la pantalla, a proposito: si lo
+  # atamos al `on_state` de la luz, `restore_mode: ALWAYS_ON` lo
+  # dispararia en el arranque, antes de que LVGL haya creado los
+  # widgets. Como la etiqueta solo se ve en INICIO, refrescarla
+  # al entrar en la pagina es suficiente.
   # ----------------------------------------------------------
   - id: refrescar_toggles
     then:
@@ -855,6 +947,8 @@ script:
           id: lbl_enchufe_txt
           text: !lambda 'return id(sw_enchufe).state ? std::string("ON") : std::string("OFF");'
 
+      - script.execute: sincronizar_brillo
+
 # ============================================================
 # LVGL
 # ============================================================
@@ -886,19 +980,17 @@ lvgl:
       bg_color: c_bg
       bg_opa: cover
       widgets:
-        - label:
-            x: 16
-            y: 88
-            text_font: font_xs
-            text_color: c_text_dim
-            text: "CONTROLES"
-
+        # 4 filas de 76 px (84..406) en la banda 84..408. Se ha
+        # quitado el titulo "CONTROLES" para ganar los 27 px que
+        # hacia falta: asi el ON/OFF se queda en font_l (48) en
+        # vez de bajar a font_m (36). El boton del nav ya dice
+        # "INICIO", asi que el titulo era redundante.
         - button:
             id: btn_luz_salon
             x: 16
-            y: 122
+            y: 84
             width: 448
-            height: 88
+            height: 76
             radius: 18
             border_width: 0
             bg_color: c_surface_hi
@@ -922,9 +1014,9 @@ lvgl:
         - button:
             id: btn_luz_habitacion
             x: 16
-            y: 218
+            y: 166
             width: 448
-            height: 88
+            height: 76
             radius: 18
             border_width: 0
             bg_color: c_surface_hi
@@ -948,9 +1040,9 @@ lvgl:
         - button:
             id: btn_enchufe
             x: 16
-            y: 314
+            y: 248
             width: 448
-            height: 88
+            height: 76
             radius: 18
             border_width: 0
             bg_color: c_surface_hi
@@ -970,6 +1062,32 @@ lvgl:
                   text: "OFF"
             on_click:
               - switch.toggle: sw_enchufe
+
+        - button:
+            id: btn_brillo
+            x: 16
+            y: 330
+            width: 448
+            height: 76
+            radius: 18
+            border_width: 0
+            bg_color: c_surface_hi
+            widgets:
+              - label:
+                  x: 28
+                  align: LEFT_MID
+                  text_font: font_s
+                  text_color: c_text_dim
+                  text: "PANTALLA"
+              - label:
+                  id: lbl_brillo_txt
+                  x: -28
+                  align: RIGHT_MID
+                  text_font: font_l
+                  text_color: c_muted
+                  text: "OFF"
+            on_click:
+              - script.execute: alternar_brillo
 
       on_load:
         - script.execute:
