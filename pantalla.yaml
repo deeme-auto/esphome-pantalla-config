@@ -1504,8 +1504,8 @@ lvgl:
                 id: lbl_fecha
                 x: -20
                 align: RIGHT_MID
-                text_font: font_xs
-                text_color: c_text_dim
+                text_font: font_l
+                text_color: c_text
                 text: "01/01/2026"
 
       - obj:
